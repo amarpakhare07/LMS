@@ -24,6 +24,7 @@ namespace LMS.Domain.Models
         public int RoleID { get; set; }
         public bool IsDeleted { get; set; }
 
+
         //public Role Role { get; set; } = null!;
         //public ICollection<CourseInstructor> CourseInstructors { get; set; } = new List<CourseInstructor>();
         //public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
