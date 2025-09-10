@@ -9,4 +9,6 @@ namespace LMS.Infrastructure.DTO
     internal class Class1
     {
     }
+
+    //test
 }
