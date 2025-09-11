@@ -45,7 +45,9 @@ namespace LMS.Domain.Models
         public ICollection<User> Users { get; set; } 
         public ICollection<Enrollment> Enrollments { get; set; } 
 
+
         public CourseCategory Category { get; set; } = null!;
+
 
         public CourseInstructor CourseInstructor { get; set; } 
 
@@ -57,7 +59,9 @@ namespace LMS.Domain.Models
 
         public ICollection<Progress> Progresses { get; set; } 
 
+
         public ICollection<Quiz> Quizzes { get; set; } 
+
 
         public ICollection<Comment> Comments { get; set; } 
 
