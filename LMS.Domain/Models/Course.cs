@@ -44,25 +44,28 @@ namespace LMS.Domain.Models
 
             public bool IsDeleted { get; set; }
 
-            //public Category Category { get; set; } = null!;
 
-            //public ICollection<CourseInstructor> CourseInstructors { get; set; } = new List<CourseInstructor>();
+        public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
 
-            //public ICollection<Lesson> Lessons { get; set; } = new List<Lesson>();
+        //public Category Category { get; set; } = null!;
 
-            //public ICollection<Prerequisite> Prerequisites { get; set; } = new List<Prerequisite>();
+        //public ICollection<CourseInstructor> CourseInstructors { get; set; } = new List<CourseInstructor>();
 
-            //public ICollection<Prerequisite> IsPrerequisiteFor { get; set; } = new List<Prerequisite>();
+        //public ICollection<Lesson> Lessons { get; set; } = new List<Lesson>();
 
-            //public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
+        //public ICollection<Prerequisite> Prerequisites { get; set; } = new List<Prerequisite>();
 
-            //public ICollection<Progress> Progresses { get; set; } = new List<Progress>();
+        //public ICollection<Prerequisite> IsPrerequisiteFor { get; set; } = new List<Prerequisite>();
 
-            //public ICollection<Quiz> Quizzes { get; set; } = new List<Quiz>();
+        //public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
 
-            //public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        //public ICollection<Progress> Progresses { get; set; } = new List<Progress>();
 
-        
+        //public ICollection<Quiz> Quizzes { get; set; } = new List<Quiz>();
+
+        //public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+
+
 
 
     }
