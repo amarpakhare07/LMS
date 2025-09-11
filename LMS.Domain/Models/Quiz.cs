@@ -20,6 +20,7 @@ namespace LMS.Domain.Models
 
         public Course Course { get; set; } = null!;
         public ICollection<Question> Questions { get; set; } = new List<Question>();
-        public ICollection<QuizScore> Scores { get; set; } = new List<QuizScore>();
+        public ICollection<QuizScore> QuizScores { get; set; } = new List<QuizScore>();
+        
     }
 }
