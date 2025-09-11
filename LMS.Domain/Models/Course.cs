@@ -45,9 +45,17 @@ namespace LMS.Domain.Models
             public bool IsDeleted { get; set; }
 
 
+        /// Because a Course can have multiple enrollments- one to many
         public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
 
-        //public Category Category { get; set; } = null!;
+
+        // Because a Course can have multiple Quizzes- one to many
+        public ICollection<Quiz> Quizzes { get; set; } = new List<Quiz>();
+
+
+
+
+        //public CourseCategory CourseCategory { get; set; } = null!;
 
         //public ICollection<CourseInstructor> CourseInstructors { get; set; } = new List<CourseInstructor>();
 
@@ -61,7 +69,7 @@ namespace LMS.Domain.Models
 
         //public ICollection<Progress> Progresses { get; set; } = new List<Progress>();
 
-        //public ICollection<Quiz> Quizzes { get; set; } = new List<Quiz>();
+
 
         //public ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
