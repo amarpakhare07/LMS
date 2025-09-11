@@ -7,8 +7,6 @@ namespace Lms.Data.EntityConfigurations {
     public class CourseConfiguration : IEntityTypeConfiguration<Course> {
         public void Configure(EntityTypeBuilder<Course> builder) {
             // Configuration goes here
-<<<<<<< HEAD
-=======
             builder.ToTable("courses");
 
             builder.HasKey(c => c.CourseID);
@@ -49,7 +47,6 @@ namespace Lms.Data.EntityConfigurations {
 
             builder.Property(c => c.ReviewCount);
 
-            builder.Property(c => c.TotalLessons);
 
             builder.Property(c => c.CreatedAt)
                    .HasColumnType("datetime2")
@@ -71,7 +68,6 @@ namespace Lms.Data.EntityConfigurations {
 
 
 
->>>>>>> 984598c1cab6b415a8f1a8296d9b85523e7a220f
         }
     }
 }
