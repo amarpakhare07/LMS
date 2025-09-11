@@ -47,10 +47,6 @@ namespace LMS.Domain.Configurations {
                 .HasForeignKey(x => x.RoleID)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            //builder.HasMany(x => x.Courses)
-            //    .WithMany(c => c.Users);
-
-               
             builder.HasIndex(x => x.Email)
                 .IsUnique()
                 .HasFilter("[IsDeleted] = 0");
