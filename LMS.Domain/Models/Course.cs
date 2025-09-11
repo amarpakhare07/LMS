@@ -36,42 +36,34 @@ namespace LMS.Domain.Models
 
             public int? ReviewCount { get; set; }
 
-            public int? TotalLessons { get; set; }
-
             public DateTime CreatedAt { get; set; }
 
             public DateTime? UpdatedAt { get; set; }
 
             public bool IsDeleted { get; set; }
 
-
-        /// Because a Course can have multiple enrollments- one to many
-        public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
-
-
-        // Because a Course can have multiple Quizzes- one to many
-        public ICollection<Quiz> Quizzes { get; set; } = new List<Quiz>();
+        public ICollection<User> Users { get; set; } 
+        public ICollection<Enrollment> Enrollments { get; set; } 
 
 
+        public CourseCategory Category { get; set; } = null!;
 
 
-        //public CourseCategory CourseCategory { get; set; } = null!;
+        public CourseInstructor CourseInstructor { get; set; } 
 
-        //public ICollection<CourseInstructor> CourseInstructors { get; set; } = new List<CourseInstructor>();
+        public ICollection<Lesson> Lessons { get; set; }
 
-        //public ICollection<Lesson> Lessons { get; set; } = new List<Lesson>();
+        public ICollection<Prerequisite> Prerequisites { get; set; } 
 
-        //public ICollection<Prerequisite> Prerequisites { get; set; } = new List<Prerequisite>();
+        public ICollection<Prerequisite> IsPrerequisiteFor { get; set; } 
 
-        //public ICollection<Prerequisite> IsPrerequisiteFor { get; set; } = new List<Prerequisite>();
-
-        //public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
-
-        //public ICollection<Progress> Progresses { get; set; } = new List<Progress>();
+        public ICollection<Progress> Progresses { get; set; } 
 
 
+        public ICollection<Quiz> Quizzes { get; set; } 
 
-        //public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+
+        public ICollection<Comment> Comments { get; set; } 
 
 
 
