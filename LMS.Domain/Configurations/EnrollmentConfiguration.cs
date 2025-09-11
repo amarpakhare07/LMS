@@ -1,7 +1,20 @@
+<<<<<<< HEAD
+// Fluent API configuration for Enrollment
+=======
+>>>>>>> 984598c1cab6b415a8f1a8296d9b85523e7a220f
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using LMS.Domain.Models;
 
+<<<<<<< HEAD
+namespace Lms.Data.EntityConfigurations {
+    public class EnrollmentConfiguration : IEntityTypeConfiguration<Enrollment> {
+        public void Configure(EntityTypeBuilder<Enrollment> builder) {
+            // Configuration goes here
+        }
+    }
+}
+=======
 namespace Lms.Data.EntityConfigurations
 {
     public class EnrollmentConfiguration : IEntityTypeConfiguration<Enrollment>
@@ -44,3 +57,4 @@ namespace Lms.Data.EntityConfigurations
         }
     }
 }
+>>>>>>> 984598c1cab6b415a8f1a8296d9b85523e7a220f
