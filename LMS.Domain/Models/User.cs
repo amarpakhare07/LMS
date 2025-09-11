@@ -25,13 +25,13 @@ namespace LMS.Domain.Models
         public bool IsDeleted { get; set; }
 
 
-        //public Role Role { get; set; } = null!;
-        //public ICollection<CourseInstructor> CourseInstructors { get; set; } = new List<CourseInstructor>();
-        //public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
-        //public ICollection<Progress> Progresses { get; set; } = new List<Progress>();
-        //public ICollection<Answer> Answers { get; set; } = new List<Answer>();
-        //public ICollection<QuizScore> QuizScores { get; set; } = new List<QuizScore>();
-        //public ICollection<Comment> Comments { get; set; } = new List<Comment>();
-        //public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
+        public Role Role { get; set; } = null!;
+        public ICollection<CourseInstructor> CourseInstructors { get; set; } = new List<CourseInstructor>();
+        public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
+        public ICollection<Progress> Progresses { get; set; } = new List<Progress>();
+        public ICollection<Answer> Answers { get; set; } = new List<Answer>();
+        public ICollection<QuizScore> QuizScores { get; set; } = new List<QuizScore>();
+        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        public ICollection<Messages> Messages { get; set; } = new List<Messages>();
     }
 }
