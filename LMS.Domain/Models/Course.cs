@@ -8,7 +8,7 @@ using System.Xml.Linq;
 
 namespace LMS.Domain.Models
 {
-    internal class Course
+    public class Course
     {
   
 
