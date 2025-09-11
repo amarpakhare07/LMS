@@ -36,33 +36,32 @@ namespace LMS.Domain.Models
 
             public int? ReviewCount { get; set; }
 
-            public int? TotalLessons { get; set; }
-
             public DateTime CreatedAt { get; set; }
 
             public DateTime? UpdatedAt { get; set; }
 
             public bool IsDeleted { get; set; }
 
-            //public Category Category { get; set; } = null!;
+        public ICollection<User> Users { get; set; } 
+        public ICollection<Enrollment> Enrollments { get; set; } 
 
-            //public ICollection<CourseInstructor> CourseInstructors { get; set; } = new List<CourseInstructor>();
+        public CourseCategory Category { get; set; } = null!;
 
-            //public ICollection<Lesson> Lessons { get; set; } = new List<Lesson>();
+        public CourseInstructor CourseInstructor { get; set; } 
 
-            //public ICollection<Prerequisite> Prerequisites { get; set; } = new List<Prerequisite>();
+        public ICollection<Lesson> Lessons { get; set; }
 
-            //public ICollection<Prerequisite> IsPrerequisiteFor { get; set; } = new List<Prerequisite>();
+        public ICollection<Prerequisite> Prerequisites { get; set; } 
 
-            //public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
+        public ICollection<Prerequisite> IsPrerequisiteFor { get; set; } 
 
-            //public ICollection<Progress> Progresses { get; set; } = new List<Progress>();
+        public ICollection<Progress> Progresses { get; set; } 
 
-            //public ICollection<Quiz> Quizzes { get; set; } = new List<Quiz>();
+        public ICollection<Quiz> Quizzes { get; set; } 
 
-            //public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        public ICollection<Comment> Comments { get; set; } 
 
-        
+
 
 
     }

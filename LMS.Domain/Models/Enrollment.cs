@@ -17,7 +17,12 @@ namespace LMS.Domain.Models
         public DateTime? UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
 
+<<<<<<< HEAD
         public Course Course { get; set; } = null!;
         public User User { get; set; } = null!;
+=======
+        public ICollection<Course> Courses { get; set; } 
+        public ICollection<User> Users { get; set; } 
+>>>>>>> 984598c1cab6b415a8f1a8296d9b85523e7a220f
     }
 }
