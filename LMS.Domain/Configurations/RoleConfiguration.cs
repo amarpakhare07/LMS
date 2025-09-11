@@ -17,9 +17,6 @@ namespace LMS.Domain.Configurations {
                 .HasMaxLength(50)
                 .IsUnicode(false);
 
-            builder.Property(x => x.Description)
-                .HasColumnType("varchar(max)")
-                .IsUnicode(false);
             builder.Property(x => x.CreatedAt)
                 .HasColumnType("datetime2")
                 .HasDefaultValueSql("GETUTCDATE()");
