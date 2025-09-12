@@ -53,9 +53,7 @@ namespace LMS.Domain.Models
 
         public ICollection<Lesson> Lessons { get; set; }
 
-        public ICollection<Prerequisite> Prerequisites { get; set; } 
-
-        public ICollection<Prerequisite> IsPrerequisiteFor { get; set; } 
+        
 
         public ICollection<Progress> Progresses { get; set; } 
 
