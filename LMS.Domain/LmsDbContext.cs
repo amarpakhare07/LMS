@@ -18,7 +18,6 @@ namespace LMS.Domain
         public DbSet<Course> Courses { get; set; }
         public DbSet<CourseInstructor> CourseInstructors { get; set; }
         public DbSet<Lesson> Lessons { get; set; }
-        public DbSet<Prerequisite> Prerequisites { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Progress> Progresses { get; set; }
         public DbSet<Quiz> Quizzes { get; set; }
