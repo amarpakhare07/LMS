@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 namespace LMS.Domain.Models
 {
-    public class Role
+    public class CourseCategory
     {
-        public int RoleID { get; set; }
-        public string RoleName { get; set; } = null!;
+        public int CategoryID { get; set; }
+        public string Name { get; set; } = null!;
+        public string? Description { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
+        public ICollection<Course> Courses { get; set; } 
 
-        public ICollection<User> Users { get; set; } = new List<User>();
     }
 }
