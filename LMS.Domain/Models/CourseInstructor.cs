@@ -12,10 +12,8 @@ namespace LMS.Domain.Models
         public int UserID { get; set; }
         public DateTime AssignedAt { get; set; }
 
+        // Navigation properties for the single related entities.
         public Course Course { get; set; } = null!;
-
-        public ICollection<Course> Courses { get; set; }
-
         public User User { get; set; } = null!;
     }
 }

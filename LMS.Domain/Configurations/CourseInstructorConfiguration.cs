@@ -15,13 +15,13 @@ namespace Lms.Data.EntityConfigurations {
                    .IsRequired();
 
             // Relationships
-            builder.HasMany(ci => ci.Courses)
-                   .WithOne(c => c.CourseInstructor)
+            builder.HasOne(ci => ci.Course)
+                   .WithMany(c => c.CourseInstructors)
                    .HasForeignKey(ci => ci.CourseID)
                    .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(ci => ci.User)
-                   .WithOne(u => u.CourseInstructor)
+                   .WithMany(u => u.CourseInstructors)
                    .OnDelete(DeleteBehavior.Cascade);
         }
     }

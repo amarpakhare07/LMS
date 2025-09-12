@@ -14,9 +14,10 @@ namespace LMS.Domain.Models
         public int UserID { get; set; }
         public string Name { get; set; } = null!;
         public string Email { get; set; } = null!;
-        public string PasswordHash { get; set; } = null!; 
+        public string PasswordHash { get; set; } = null!;
         public string? ProfilePicture { get; set; }
         public string? Bio { get; set; }
+        public bool IsInstructor { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -24,16 +25,23 @@ namespace LMS.Domain.Models
         public int RoleID { get; set; }
         public bool IsDeleted { get; set; }
 
-
+        // Navigation property for the one-to-one relationship with Role.
         public Role Role { get; set; } = null!;
 
-        public CourseInstructor CourseInstructor { get; set; } 
-        public ICollection<Enrollment> Enrollments { get; set; } 
-        public ICollection<Progress> Progresses { get; set; } 
-        public ICollection<Answer> Answers { get; set; } 
-        public ICollection<QuizScore> QuizScores { get; set; } 
-        public ICollection<Comment> Comments { get; set; } 
-        public ICollection<Messages> Messages { get; set; } 
+        // Navigation property for the many-to-many relationship with Course, via the instructors table.
+        // A user can be an instructor for multiple courses.
+        public ICollection<CourseInstructor> CourseInstructors { get; set; } = new List<CourseInstructor>();
+
+        // Navigation property for the many-to-many relationship with Course, via the enrollments table.
+        // A user can enroll in multiple courses.
+        public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>();
+
+        // Navigation properties for one-to-many relationships (from User to other tables)
+        public ICollection<Progress> Progresses { get; set; } = new List<Progress>();
+        public ICollection<Answer> Answers { get; set; } = new List<Answer>();
+        public ICollection<QuizScore> QuizScores { get; set; } = new List<QuizScore>();
+        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        public ICollection<Messages> Messages { get; set; } = new List<Messages>();
 
     }
 }

@@ -65,9 +65,6 @@ namespace Lms.Data.EntityConfigurations {
 
             builder.HasQueryFilter(c => !c.IsDeleted);
 
-
-
-
         }
     }
 }
