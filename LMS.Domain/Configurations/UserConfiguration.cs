@@ -42,15 +42,12 @@ namespace LMS.Domain.Configurations {
             builder.Property(x => x.IsDeleted)
                 .HasDefaultValue(false);
 
-            builder.HasOne(x => x.Role)
-                .WithMany(r => r.Users)
-                .HasForeignKey(x => x.RoleID)
-                .OnDelete(DeleteBehavior.Restrict);
-
+           
             builder.HasIndex(x => x.Email)
                 .IsUnique()
                 .HasFilter("[IsDeleted] = 0");
             builder.HasQueryFilter(x => !x.IsDeleted);
+
 
         }
     }

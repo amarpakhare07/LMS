@@ -4,6 +4,7 @@ using LMS.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LMS.Domain.Migrations
 {
     [DbContext(typeof(LmsDbContext))]
-    partial class LmsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250912082139_Removed_Roles_Table")]
+    partial class Removed_Roles_Table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -590,6 +593,9 @@ namespace LMS.Domain.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
+                    b.Property<bool>("IsInstructor")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("LastLogin")
                         .HasColumnType("datetime2");
 
@@ -623,19 +629,6 @@ namespace LMS.Domain.Migrations
                         .HasFilter("[IsDeleted] = 0");
 
                     b.ToTable("users", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserID = 1,
-                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Email = "admin@cognizant.com",
-                            IsActive = true,
-                            IsDeleted = false,
-                            Name = "Admin",
-                            PasswordHash = "admin@123",
-                            Role = 3
-                        });
                 });
 
             modelBuilder.Entity("LMS.Domain.Models.Answer", b =>

@@ -1,4 +1,5 @@
-﻿using LMS.Domain.Models;
+﻿using LMS.Domain.Enums;
+using LMS.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace LMS.Domain
     {
         public LmsDbContext(DbContextOptions<LmsDbContext> options) : base(options) { }
 
-        public DbSet<Role> Roles { get; set; }
+        //public DbSet<Role> Roles { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<CourseCategory> Categories { get; set; }
         public DbSet<Course> Courses { get; set; }
@@ -30,6 +31,19 @@ namespace LMS.Domain
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(LmsDbContext).Assembly);
+            modelBuilder.Entity<User>().HasData(
+                new User
+                {
+                    UserID = 1, // You must provide a primary key
+                    Name = "Admin",
+                    Email = "admin@cognizant.com",
+                    PasswordHash = "admin@123",
+                    IsActive = true,
+                    Role = UserRole.Admin,
+                    IsDeleted = false
+                    // Omit properties with default values or that are nullable
+                }
+            );
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

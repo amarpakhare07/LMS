@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LMS.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
@@ -17,16 +18,13 @@ namespace LMS.Domain.Models
         public string PasswordHash { get; set; } = null!;
         public string? ProfilePicture { get; set; }
         public string? Bio { get; set; }
-        public bool IsInstructor { get; set; }
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } 
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public DateTime? LastLogin { get; set; }
-        public int RoleID { get; set; }
+        public UserRole Role { get; set; } = UserRole.Student; // Default role is Student
         public bool IsDeleted { get; set; }
 
-        // Navigation property for the one-to-one relationship with Role.
-        public Role Role { get; set; } = null!;
 
         // Navigation property for the many-to-many relationship with Course, via the instructors table.
         // A user can be an instructor for multiple courses.
