@@ -14,11 +14,7 @@ namespace LMS.Domain.Models
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public bool IsDeleted { get; set; }
-
-<<<<<<< HEAD
-        public ICollection<Course> Courses { get; set; } = new List<Course>();
-=======
         public ICollection<Course> Courses { get; set; } 
->>>>>>> 984598c1cab6b415a8f1a8296d9b85523e7a220f
+
     }
 }
