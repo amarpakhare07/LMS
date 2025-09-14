@@ -34,8 +34,11 @@ namespace LMS.API
             builder.Services.AddScoped<PasswordHashing>();
             builder.Services.AddScoped<JwtService>();
             builder.Services.AddScoped<IRegisterUserRepository, RegisterUserRepository>();
+
             builder.Services.AddScoped<ICourseRepository, CourseRepository>();
             builder.Services.AddScoped<ICourseService, CourseService>();
+            builder.Services.AddScoped<ICourseCategoryRepository, CourseCategoryRepository>();
+            builder.Services.AddScoped<ICourseCategoryService, CourseCategoryService>();
 
             //------------------
 
