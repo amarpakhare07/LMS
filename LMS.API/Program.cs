@@ -2,6 +2,7 @@ using LMS.Domain;
 using LMS.Infrastructure.Repository;
 using LMS.Infrastructure.Repository.Interfaces;
 using LMS.Infrastructure.Services;
+using LMS.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -33,6 +34,8 @@ namespace LMS.API
             builder.Services.AddScoped<PasswordHashing>();
             builder.Services.AddScoped<JwtService>();
             builder.Services.AddScoped<IRegisterUserRepository, RegisterUserRepository>();
+            builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+            builder.Services.AddScoped<ICourseService, CourseService>();
 
             //------------------
 
