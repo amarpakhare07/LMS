@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 using LMS.Infrastructure.DTO;
+using LMS.Domain.Enums;
 
 namespace LMS.API.Controllers
 {
@@ -20,7 +21,6 @@ namespace LMS.API.Controllers
         {
             _userManagementRepository = userManagementRepository;  // This assigns the injected repository userRepo to the private field _userRepo
         }
-
 
         // GET USER FULL PROFILEE //
         [HttpGet("me")]
@@ -126,6 +126,112 @@ namespace LMS.API.Controllers
             }).ToList();
             return Ok(enrolledCourses);
         }
-        
+
+
+
+
+
+
+
+        #region Admin Functionalities
+
+        // Get all users
+        [HttpGet("admin/users")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var users = await _userManagementRepository.GetAllUsersAsync();
+            var userDtos = users.Select(user => new UserProfileDto
+            {
+                UserId = user.UserID,
+                Name = user.Name,
+                Email = user.Email,
+                Bio = user.Bio,
+                ProfilePicture = user.ProfilePicture,
+                LastLogin = user.LastLogin,
+                UpdatedAt = user.UpdatedAt,
+                IsActive = user.IsActive,
+                IsDeleted = user.IsDeleted
+            }).ToList();
+            return Ok(userDtos);
+        }
+
+        [HttpGet("admin/users/role/{role}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetUsersByRole(string role)
+        {
+            if (!Enum.TryParse<UserRole>(role, true, out var userRole))
+            {
+                return BadRequest(new { Message = "Invalid role specified" });
+            }
+            var users = await _userManagementRepository.GetUsersByRoleAsync(userRole);
+            var userDtos = users.Select(user => new UserProfileDto
+            {
+                UserId = user.UserID,
+                Name = user.Name,
+                Email = user.Email,
+                Bio = user.Bio,
+                ProfilePicture = user.ProfilePicture,
+                LastLogin = user.LastLogin,
+                UpdatedAt = user.UpdatedAt,
+                IsActive = user.IsActive,
+                IsDeleted = user.IsDeleted
+            }).ToList();
+            return Ok(userDtos);
+        }
+
+        [HttpPost("admin/users")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserDto newUser)
+        {
+            var existingUser = await _userManagementRepository.GetUserByEmailAsync(newUser.Email);
+            if (existingUser != null)
+            {
+                return Conflict(new { Message = "Email already in use" });
+            }
+            var created = await _userManagementRepository.CreateUserAsync(newUser);
+            if (!created)
+            {
+                return StatusCode(500, new { Message = "Error creating user" });
+            }
+            return Ok(new { Message = "User created successfully" });
+        }
+
+        [HttpPut("admin/users/status")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateUserStatus([FromBody] UpdateUserStatusDto userStatusDto)
+        {
+            var user = await _userManagementRepository.GetUserByEmailAsync(userStatusDto.Email);
+            if (user == null)
+            {
+                return NotFound(new { Message = "User not found" });
+            }
+            user.IsActive = userStatusDto.IsActive;
+            var updated = await _userManagementRepository.UpdateUserStatusAsync(user.Email, user.IsActive);
+            if (!updated)
+            {
+                return StatusCode(500, new { Message = "Error updating user status" });
+            }
+            return Ok(new { Message = "User status updated successfully" });
+        }
+
+        [HttpDelete("admin/users")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteUser([FromBody] DeleteUserDto deleteUserDto)
+        {
+            var user = await _userManagementRepository.GetUserByEmailAsync(deleteUserDto.Email);
+            if (user == null)
+            {
+                return NotFound(new { Message = "User not found" });
+            }
+            var deleted = await _userManagementRepository.DeleteUserAsync(user.Email);
+            if (!deleted)
+            {
+                return StatusCode(500, new { Message = "Error deleting user" });
+            }
+            return Ok(new { Message = "User deleted successfully" });
+        }
+
+        #endregion
     }
 }
