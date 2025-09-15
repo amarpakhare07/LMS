@@ -1,6 +1,7 @@
 ﻿using LMS.Domain.Models;
 using LMS.Infrastructure.DTO;
 using LMS.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +19,7 @@ namespace LMS.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Instructor")]
         public async Task<IActionResult> CreateCategory([FromBody] CreateCourseCategoryDto createCourseCcategoryDto)
         {
             var category = await courseCategoryService.CreateCategoryAsync(createCourseCcategoryDto);
@@ -30,7 +32,7 @@ namespace LMS.API.Controllers
         }
 
         [HttpGet("{id}")]
-        //public async Task<ActionResult<CourseCategory>> GetCategoryById(int id)
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> GetCategoryById(int id)
         {
             var category = await courseCategoryService.GetCategoryByIdAsync(id);
@@ -42,7 +44,7 @@ namespace LMS.API.Controllers
         }
 
         [HttpGet]
-        //public async Task<ActionResult<List<CourseCategory>>> GetAllCategories()
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllCategories()
         {
             var categories = await courseCategoryService.GetAllCategoriesAsync();
@@ -50,6 +52,7 @@ namespace LMS.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin,Instructor")]
         public async Task<IActionResult> UpdateCategory(
             int id, [FromBody] CourseCategoryDto courseCategoryDto)
         {
@@ -66,6 +69,7 @@ namespace LMS.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin,Instructor")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             var isDeleted = await courseCategoryService.DeleteCategoryAsync(id);
