@@ -9,11 +9,11 @@ namespace LMS.Infrastructure.Repository.Interfaces
 {
     public interface ICourseCategoryRepository
     {
-        Task<CourseCategory> CreateCategoryAsync(CourseCategory category);
+        Task<CourseCategory> CreateCategoryAsync(CourseCategory courseCategory);
         Task<CourseCategory?> GetCategoryByIdAsync(int id);
         Task<CourseCategory?> GetCategoryByNameAsync(string name);
         Task<List<CourseCategory>> GetAllCategoriesAsync();
-        Task<CourseCategory?> UpdateCategoryAsync(CourseCategory category);
+        Task<CourseCategory?> UpdateCategoryAsync(CourseCategory courseCategory);
         Task<bool> DeleteCategoryAsync(int id);
     }
 }

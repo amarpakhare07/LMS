@@ -18,9 +18,9 @@ namespace LMS.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryDto categoryDto)
+        public async Task<IActionResult> CreateCategory([FromBody] CreateCourseCategoryDto createCourseCcategoryDto)
         {
-            var category = await courseCategoryService.CreateCategoryAsync(categoryDto);
+            var category = await courseCategoryService.CreateCategoryAsync(createCourseCcategoryDto);
             if (category == null)
             {
                 return BadRequest(new { Message = "A category with this name already exists." });
@@ -50,13 +50,14 @@ namespace LMS.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCategory(int id, [FromBody] CreateCategoryDto categoryDto)
+        public async Task<IActionResult> UpdateCategory(
+            int id, [FromBody] CourseCategoryDto courseCategoryDto)
         {
-            if (id != categoryDto.CategoryID)
+            if (id != courseCategoryDto.CategoryID)
             {
                 return BadRequest("Mismatch Category ID");
             }
-            var updatedCategory = await courseCategoryService.UpdateCategoryAsync(id, categoryDto);
+            var updatedCategory = await courseCategoryService.UpdateCategoryAsync(id, courseCategoryDto);
             if (updatedCategory == null)
             {
                 return NotFound();
