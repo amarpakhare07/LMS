@@ -19,7 +19,7 @@ namespace LMS.API.Controllers
 
         // Implementation goes here
         [HttpPost]
-        //[AllowAnonymous]
+        [Authorize(Roles = "Admin,Instructor")]
         public async Task<IActionResult> CreateCourse([FromBody] CreateCourseDto createCourseDto)
         {
             var course = await courseService.CreateCourseAsync(createCourseDto);
@@ -27,7 +27,7 @@ namespace LMS.API.Controllers
         }
 
         [HttpGet("{id}")]
-        //[AllowAnonymous]
+        [AllowAnonymous]
         public async Task<IActionResult> GetCourseById(int id)
         {
             var course = await courseService.GetCourseByIdAsync(id);
@@ -36,7 +36,7 @@ namespace LMS.API.Controllers
         }
 
         [HttpGet]
-        //[AllowAnonymous]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllCourses()
         //public async Task<ActionResult<IEnumerable<CourseDto>>> GetAllCourses()
         {
@@ -45,7 +45,7 @@ namespace LMS.API.Controllers
         }
 
         [HttpPut("{id}")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Instructor")]
         public async Task<IActionResult> UpdateCourse(int id, [FromBody] CourseDto courseDto)
         {
             if (id != courseDto.CourseID)
@@ -62,7 +62,7 @@ namespace LMS.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Instructor")]
         public async Task<IActionResult> DeleteCourse(int id)
         {
             var success = await courseService.DeleteCourseAsync(id);
