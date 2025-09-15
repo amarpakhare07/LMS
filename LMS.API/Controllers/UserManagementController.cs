@@ -1,11 +1,16 @@
-﻿using LMS.Infrastructure.Repository.Interfaces;
+﻿using LMS.Domain.Models;
+using LMS.Infrastructure.DTO;
+using LMS.Infrastructure.Repository.Interfaces;
+using LMS.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System.Security.Claims;
 
 using LMS.Infrastructure.DTO;
 using LMS.Domain.Enums;
+
 
 namespace LMS.API.Controllers
 {
@@ -17,10 +22,20 @@ namespace LMS.API.Controllers
         // UsermanagementRepo is private declared inside controller and its type is interface(IUserRepo)
         public readonly IUserManagementRepository _userManagementRepository;
 
-        public UserManagementController(IUserManagementRepository userManagementRepository)
+
+        public readonly IFileUploadService _fileService;
+        private readonly FileUploadLimits _limits;
+
+        public UserManagementController(
+            IUserManagementRepository userManagementRepository,
+            IFileUploadService fileService,
+            IOptions<FileUploadLimits> limits)
         {
-            _userManagementRepository = userManagementRepository;  // This assigns the injected repository userRepo to the private field _userRepo
+            _userManagementRepository = userManagementRepository;
+            _fileService = fileService;
+            _limits = limits.Value;
         }
+
 
         // GET USER FULL PROFILEE //
         [HttpGet("me")]
@@ -58,7 +73,7 @@ namespace LMS.API.Controllers
 
         }
         // UPDATING THE BIO
-        [HttpPut("bio")]
+        [HttpPut("me/bio")]
         [Authorize]
         public async Task<IActionResult> UpdateBio([FromBody] UserUpdateProfileBioDto bio)
         {
@@ -129,8 +144,21 @@ namespace LMS.API.Controllers
 
 
 
-
-
+        // Upload profile picture
+        [HttpPost("me/profilePicture")]
+        [Authorize(Roles ="Student")]
+        public async Task<IActionResult> UploadProfileImage(IFormFile file)
+        {
+            try
+            {
+                var fileName = await _fileService.SaveFileAsync(file, _limits.ProfileImageMaxSize);
+                return Ok(new { FileName = fileName, Message = "Profile image uploaded successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
 
 
         #region Admin Functionalities
@@ -233,5 +261,6 @@ namespace LMS.API.Controllers
         }
 
         #endregion
+
     }
 }

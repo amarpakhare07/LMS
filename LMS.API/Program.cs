@@ -1,4 +1,5 @@
 using LMS.Domain;
+using LMS.Domain.Models;
 using LMS.Infrastructure.Repository;
 using LMS.Infrastructure.Repository.Interfaces;
 using LMS.Infrastructure.Services;
@@ -30,6 +31,10 @@ namespace LMS.API
             //---------------
 
             //Add all the Dependancies Injection from Services and Repositories Layer
+            builder.Services.Configure<FileUploadLimits>(
+            builder.Configuration.GetSection("FileUploadLimits"));
+            builder.Services.AddScoped<IFileUploadService, FileUploadService>();
+
 
             builder.Services.AddScoped<PasswordHashing>();
             builder.Services.AddScoped<JwtService>();
