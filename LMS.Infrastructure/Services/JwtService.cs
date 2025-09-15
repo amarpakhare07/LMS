@@ -35,17 +35,17 @@ namespace LMS.Infrastructure.Services
                 return null;
             }
 
-            //bool passcheck;
-            //if (request.Email == "admin@cognizant.com")
-            //{
-            //    passcheck = request.Password == user.PasswordHash;
-            //}
-            //else
-            //{
-            //    passcheck = _passwordHashing.VerifyPassword(user.PasswordHash, request.Password);
-            //}
+            bool passcheck;
+            if (request.Email == "admin@cognizant.com")
+            {
+                passcheck = request.Password == user.PasswordHash;
+            }
+            else
+            {
+                passcheck = _passwordHashing.VerifyPassword(user.PasswordHash, request.Password);
+            }
 
-            if (!_passwordHashing.VerifyPassword(user.PasswordHash, request.Password))
+            if (!passcheck)
             {
                 return null;
             }
