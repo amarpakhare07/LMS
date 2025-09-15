@@ -91,12 +91,7 @@ namespace LMS.Infrastructure.Repository
         #region Authentication
         public async Task<RegisterDto> RegisterUserAsync(RegisterDto registerDto)
         {
-            //if (registerDto == null)
-            //{
-            //    throw new ArgumentNullException(nameof(registerDto), "Register data cannot be null");
-            //}
-            // Here you would typically add code to save the user to a database.
-            var userDto = new RegisterDto
+           var userDto = new RegisterDto
             {
                 Name = registerDto.Name,
                 Email = registerDto.Email,
@@ -113,7 +108,26 @@ namespace LMS.Infrastructure.Repository
 
             return registerDto;
         }
+        public async Task<RegisterDto> RegisterUserAsync(RegisterInstructorDto registerInstructorDto)
+        {
+            var userDto = new RegisterDto
+            {
+                Name = registerInstructorDto.Name,
+                Email = registerInstructorDto.Email,
+                Password = _passwordHashing.HashPassword(registerInstructorDto.Password)
+            };
+            User user = new User
+            {
+                Name = registerInstructorDto.Name,
+                Email = registerInstructorDto.Email,
+                PasswordHash = userDto.Password,
+                Role = UserRole.Instructor
+            };
+            _dbContext.Users.Add(user);
+            await _dbContext.SaveChangesAsync();
+            return userDto;
 
+        }
         public Task<User?> FindByEmailAsync(string email)
         {
             return _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
@@ -198,5 +212,6 @@ namespace LMS.Infrastructure.Repository
                 .ToListAsync();
         }
 
+        
     }
 }

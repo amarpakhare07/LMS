@@ -18,6 +18,7 @@ namespace LMS.Infrastructure.Repository.Interfaces
 
         //Authentication
         Task<RegisterDto> RegisterUserAsync(RegisterDto registerDto);
+        Task<RegisterDto> RegisterUserAsync(RegisterInstructorDto registerInstructorDto);
         Task<User?> FindByEmailAsync(string email);
         Task<bool> UpdateUserOnlyAsync(User user);
         Task<User?> FindByResetTokenAsync(string email);

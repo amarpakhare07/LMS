@@ -1,5 +1,6 @@
 ﻿using Infrastructure.DTO;
 using LMS.Domain;
+using LMS.Domain.Enums;
 using LMS.Infrastructure.DTO;
 using LMS.Infrastructure.Repository.Interfaces;
 using LMS.Infrastructure.Services;
@@ -46,6 +47,22 @@ namespace LMS.API.Controllers
                 return BadRequest(new { Message = "Invalid user data" });
             }
             var user = await _userManagementRepository.RegisterUserAsync(registerRequest);
+            if (user == null)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "User registration failed" });
+            }
+            return Ok(user);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("register/instructor")]
+        public async Task<IActionResult> Register([FromBody] RegisterInstructorDto registerInstructorDto)
+        {
+            if (registerInstructorDto == null)
+            {
+                return BadRequest(new { Message = "Invalid user data" });
+            }
+            var user = await _userManagementRepository.RegisterUserAsync(registerInstructorDto);
             if (user == null)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "User registration failed" });
