@@ -23,10 +23,10 @@ namespace LMS.Infrastructure.Repository
 
         public async Task<RegisterDto> RegisterUserAsync(RegisterDto registerDto)
         {
-            if (registerDto == null)
-            {
-                throw new ArgumentNullException(nameof(registerDto), "Register data cannot be null");
-            }
+            //if (registerDto == null)
+            //{
+            //    throw new ArgumentNullException(nameof(registerDto), "Register data cannot be null");
+            //}
             // Here you would typically add code to save the user to a database.
             var userDto = new RegisterDto
             {

@@ -50,6 +50,14 @@ namespace LMS.Infrastructure.Services
                 return null;
             }
 
+            // Adding the login actice stamp
+            user.IsActive = true;
+
+            // Inserting the last login time
+            user.LastLogin = DateTime.UtcNow;
+            await _dbContext.SaveChangesAsync();
+
+
             var issuer = _configuration["JwtConfig:Issuer"];
             var audience = _configuration["JwtConfig:Audience"];
             var key = _configuration["JwtConfig:Key"];

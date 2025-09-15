@@ -44,7 +44,55 @@ namespace LMS.Domain
                     // Omit properties with default values or that are nullable
                 }
             );
+
+
+
+            ///////////// STARTING OF COURSE ////////////
+
+            modelBuilder.Entity<Course>().HasData(
+               new Course
+               {
+                   CourseID = 1,
+                   Title = "ASP.NET",
+                   Description = "API build",
+                   Level = "Beginner",
+                   Language = "English",
+                   Duration = 30,
+                   ThumbnailURL = "https://example.com/aspnet.png",
+                   CategoryID = 1,
+                   Published = true,
+                   CreatedAt = DateTime.UtcNow,
+                   IsDeleted = false
+               }
+           );
+
+            // Seed Enrollment
+            modelBuilder.Entity<Enrollment>().HasData(
+                new Enrollment
+                {
+                    EnrollmentID = 1,
+                    CourseID = 1,
+                    UserID = 3, 
+                    EnrollmentDate = DateTime.UtcNow.AddDays(-5),
+                    CompletionStatus = "In progress",
+                    IsDeleted = false
+                }
+            );
+            ///////////// ENDING OF COURSE ////////////
+
+
         }
+
+
+
+
+
+
+
+
+
+
+
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
