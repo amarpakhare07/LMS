@@ -15,7 +15,7 @@ namespace LMS.Domain.Models
         public DateTime CreatedAt { get; set; }
         public string? MessageType { get; set; }
         public string? TargetURL { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         public User User { get; set; } = null!;
     }

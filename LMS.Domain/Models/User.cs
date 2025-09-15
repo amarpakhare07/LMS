@@ -22,6 +22,8 @@ namespace LMS.Domain.Models
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public DateTime? LastLogin { get; set; }
+        public string? ResetToken { get; set; } = null;
+        public DateTime? ResetTokenExpiry { get; set; } = null;
         public UserRole Role { get; set; } = UserRole.Student; // Default role is Student
         public bool IsDeleted { get; set; }
 

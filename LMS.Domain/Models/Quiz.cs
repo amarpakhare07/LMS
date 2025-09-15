@@ -16,7 +16,7 @@ namespace LMS.Domain.Models
         public int? AttemptsAllowed { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         public Course Course { get; set; } = null!;
         public ICollection<Question> Questions { get; set; } = new List<Question>();
