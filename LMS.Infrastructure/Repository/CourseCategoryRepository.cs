@@ -18,11 +18,11 @@ namespace LMS.Infrastructure.Repository
         {
             this.dbContext = dbContext;
         }
-        public async Task<CourseCategory> CreateCategoryAsync(CourseCategory category)
+        public async Task<CourseCategory> CreateCategoryAsync(CourseCategory courseCategory)
         {
-            await dbContext.Categories.AddAsync(category);
+            await dbContext.Categories.AddAsync(courseCategory);
             await dbContext.SaveChangesAsync();
-            return category;
+            return courseCategory;
         }
 
         public async Task<CourseCategory?> GetCategoryByIdAsync(int id)
@@ -40,11 +40,11 @@ namespace LMS.Infrastructure.Repository
         }
 
 
-        public async Task<CourseCategory?> UpdateCategoryAsync(CourseCategory category)
+        public async Task<CourseCategory?> UpdateCategoryAsync(CourseCategory courseCategory)
         {
-            dbContext.Categories.Update(category);
+            dbContext.Categories.Update(courseCategory);
             await dbContext.SaveChangesAsync();
-            return category;
+            return courseCategory;
         }
 
         public async Task<bool> DeleteCategoryAsync(int id)

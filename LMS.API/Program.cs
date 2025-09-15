@@ -46,6 +46,9 @@ namespace LMS.API
             builder.Services.AddScoped<ICourseCategoryRepository, CourseCategoryRepository>();
             builder.Services.AddScoped<ICourseCategoryService, CourseCategoryService>();
 
+            builder.Services.AddScoped<ILessonRepository, LessonRepository>();
+            builder.Services.AddScoped<ILessonService, LessonService>();
+
             //------------------
 
             builder.Services.AddEndpointsApiExplorer();

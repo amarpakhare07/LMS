@@ -27,7 +27,7 @@ namespace LMS.Infrastructure.Repository.Interfaces
         Task<List<User>> GetUsersByRoleAsync(UserRole role);
         Task<User?> GetUserByEmailAsync(string email);
         Task<bool> CreateUserAsync(CreateUserDto user);
-        Task<bool> UpdateUserStatusAsync(User user);
+        Task<bool> UpdateUserStatusAsync(string email, bool isActive);
         Task<bool> DeleteUserAsync(string email);
     }
 }

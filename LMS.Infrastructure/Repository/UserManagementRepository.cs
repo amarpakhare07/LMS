@@ -52,17 +52,43 @@ namespace LMS.Infrastructure.Repository
             _dbContext.Users.Add(newUser);
             return await _dbContext.SaveChangesAsync() > 0;
         }
-        public Task<bool> UpdateUserStatusAsync(User user)
+        public Task<bool> UpdateUserStatusAsync(string email, bool isActive)
         {
-            throw new NotImplementedException();
+            var user = _dbContext.Users.FirstOrDefault(u => u.Email == email);
+            if (user == null)
+            {
+                throw new ArgumentException("User not found", nameof(email));
+            }
+
+            // Update the user's active status
+            user.IsActive = isActive;
+
+            // Save the changes to the database
+            return _dbContext.SaveChangesAsync().ContinueWith(t => t.Result > 0);
+
         }
         public Task<bool> DeleteUserAsync(string email)
         {
-            throw new NotImplementedException();
+            var user = _dbContext.Users.FirstOrDefault(u => u.Email == email);
+            if (user == null)
+            {
+                throw new ArgumentException("User not found", nameof(email));
+            }
+
+            // Soft delete the user by setting the IsDeleted flag to true
+            user.IsDeleted = true;
+
+            // Save the changes to the database
+            return _dbContext.SaveChangesAsync().ContinueWith(t => t.Result > 0);
+
         }
         #endregion
 
 
+
+
+
+        #region Authentication
         public async Task<RegisterDto> RegisterUserAsync(RegisterDto registerDto)
         {
             //if (registerDto == null)
@@ -103,6 +129,18 @@ namespace LMS.Infrastructure.Repository
         {
             throw new NotImplementedException();
         }
+
+        #endregion
+
+
+
+
+
+
+
+
+
+
 
 
 

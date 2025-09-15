@@ -19,17 +19,17 @@ namespace LMS.Infrastructure.Services
             this.categoryRepository = categoryRepository;
         }
 
-        public async Task<CourseCategory> CreateCategoryAsync(CreateCategoryDto categoryDto)
+        public async Task<CourseCategory> CreateCategoryAsync(CreateCourseCategoryDto createCourseCategoryDto)
         {
-            var existingCategory = await categoryRepository.GetCategoryByNameAsync(categoryDto.Name);
+            var existingCategory = await categoryRepository.GetCategoryByNameAsync(createCourseCategoryDto.Name);
             if (existingCategory != null)
             {
                 throw new InvalidOperationException("Category with the same name already exists.");
             }
             var category = new CourseCategory
             {
-                Name = categoryDto.Name,
-                Description = categoryDto.Description
+                Name = createCourseCategoryDto.Name,
+                Description = createCourseCategoryDto.Description
             };
             return await categoryRepository.CreateCategoryAsync(category);
         }
@@ -41,20 +41,20 @@ namespace LMS.Infrastructure.Services
         {
             return await categoryRepository.GetAllCategoriesAsync();
         }
-        public async Task<CourseCategory?> UpdateCategoryAsync(int id, CreateCategoryDto categoryDto)
+        public async Task<CourseCategory?> UpdateCategoryAsync(int id, CourseCategoryDto courseCategoryDto)
         {
             var existingCategory = await categoryRepository.GetCategoryByIdAsync(id);
             if (existingCategory == null)
             {
                 return null;
             }
-            var categoryWithSameName = await categoryRepository.GetCategoryByNameAsync(categoryDto.Name);
+            var categoryWithSameName = await categoryRepository.GetCategoryByNameAsync(courseCategoryDto.Name);
             if (categoryWithSameName != null && categoryWithSameName.CategoryID != id)
             {
                 throw new InvalidOperationException("Category with the same name already exists.");
             }
-            existingCategory.Name = categoryDto.Name;
-            existingCategory.Description = categoryDto.Description;
+            existingCategory.Name = courseCategoryDto.Name;
+            existingCategory.Description = courseCategoryDto.Description;
             return await categoryRepository.UpdateCategoryAsync(existingCategory);
         }
 
