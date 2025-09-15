@@ -24,7 +24,7 @@ namespace LMS.Domain.Models
         public int? ReviewCount { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         // Navigation property for the one-to-one relationship with Category.
         public CourseCategory Category { get; set; } = null!;

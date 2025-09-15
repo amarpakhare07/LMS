@@ -18,7 +18,7 @@ namespace LMS.Domain.Models
         public int? EstimatedTime { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         public Course Course { get; set; } = null!;
     }

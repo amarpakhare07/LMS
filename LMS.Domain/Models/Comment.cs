@@ -14,7 +14,7 @@ namespace LMS.Domain.Models
         public string Content { get; set; } = null!;
         public DateTime CreatedAt { get; set; }
         public int? ParentCommentID { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         public Course Course { get; set; } = null!;
         public User User { get; set; } = null!;

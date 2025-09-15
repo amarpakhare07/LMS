@@ -13,7 +13,7 @@ namespace LMS.Domain.Models
         public string? Description { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false;
         public ICollection<Course> Courses { get; set; } 
 
     }

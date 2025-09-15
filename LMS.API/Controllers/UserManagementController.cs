@@ -101,7 +101,7 @@ namespace LMS.API.Controllers
         // Showing courses enrolled by user
 
         [HttpGet("me/courses")]
-        [Authorize]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> GetUserEnrolledCourse()
         {
             var userIdClaims = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

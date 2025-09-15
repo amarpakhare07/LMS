@@ -44,24 +44,13 @@ namespace LMS.Domain
                     // Omit properties with default values or that are nullable
                 }
             );
+            modelBuilder.Entity<User>().HasQueryFilter(u => !u.IsDeleted);
 
 
 
-            
 
 
         }
-
-
-
-
-
-
-
-
-
-
-
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
