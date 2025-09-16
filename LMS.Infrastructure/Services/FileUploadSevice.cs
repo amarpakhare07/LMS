@@ -14,7 +14,7 @@ namespace LMS.Infrastructure.Services
         {
             _uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
 
-            Console.WriteLine($"Resolved upload path: {_uploadPath}");
+            
 
             if (!Directory.Exists(_uploadPath))
                 Directory.CreateDirectory(_uploadPath);
