@@ -72,7 +72,6 @@ namespace LMS.Infrastructure.Services
                 CreatedAt = DateTime.UtcNow,
             };
             var createdQuiz = await quizRepository.CreateQuizAsync(newQuiz);
-            createQuizDto.CreatedAt = createdQuiz.CreatedAt;
             return createQuizDto;
         }
 
