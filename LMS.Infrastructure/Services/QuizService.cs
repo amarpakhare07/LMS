@@ -60,20 +60,29 @@ namespace LMS.Infrastructure.Services
             };
         }
 
-        public async Task<CreateQuizDto> CreateQuizAsync(CreateQuizDto createQuizDto)
+        public async Task<QuizDto> CreateQuizAsync(CreateQuizDto createQuizDto)
         {
             var newQuiz = new Quiz
             {
                 CourseID = createQuizDto.CourseID,
                 Title = createQuizDto.Title,
-                TotalMarks = createQuizDto.TotalMarks,
+                TotalMarks = createQuizDto.TotalMarks, 
                 TimeLimit = createQuizDto.TimeLimit,
                 AttemptsAllowed = createQuizDto.AttemptsAllowed,
                 CreatedAt = DateTime.UtcNow,
             };
             var createdQuiz = await quizRepository.CreateQuizAsync(newQuiz);
-            createQuizDto.CreatedAt = createdQuiz.CreatedAt;
-            return createQuizDto;
+            var quizDto = new QuizDto
+            {
+                QuizID = createdQuiz.QuizID,
+                CourseID = createdQuiz.CourseID,
+                Title = createdQuiz.Title,
+                TotalMarks = createdQuiz.TotalMarks,
+                TimeLimit = createdQuiz.TimeLimit,
+                CreatedAt = createdQuiz.CreatedAt,
+                AttemptsAllowed = createdQuiz.AttemptsAllowed,
+            };
+            return quizDto;
         }
 
         public async Task<bool> DeleteQuizAsync(int quizId)
