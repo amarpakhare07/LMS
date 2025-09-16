@@ -1,10 +1,8 @@
-﻿using LMS.Infrastructure.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
 using System.Threading.Tasks;
+using LMS.Infrastructure.Services.Interfaces;
 
 namespace LMS.Infrastructure.Services
 {
@@ -14,7 +12,11 @@ namespace LMS.Infrastructure.Services
 
         public FileUploadService()
         {
-            _uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+            // Navigate up from bin/Debug to reach the solution root
+            var solutionRoot = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).FullName).FullName;
+
+            // Point to LMS.API/Uploads folder
+            _uploadPath = Path.Combine(solutionRoot, "LMS.API", "Uploads");
 
             if (!Directory.Exists(_uploadPath))
                 Directory.CreateDirectory(_uploadPath);
@@ -45,7 +47,5 @@ namespace LMS.Infrastructure.Services
 
             return File.ReadAllBytes(filePath);
         }
-
-
     }
 }

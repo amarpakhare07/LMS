@@ -85,9 +85,6 @@ namespace LMS.Infrastructure.Repository
         #endregion
 
 
-
-
-
         #region Authentication
         public async Task<RegisterDto> RegisterUserAsync(RegisterDto registerDto)
         {
@@ -147,16 +144,7 @@ namespace LMS.Infrastructure.Repository
         #endregion
 
 
-
-
-
-
-
-
-
-
-
-
+        #region User Profile
 
         // Change the method signature to accept int instead of Guid
         public async Task<User> GetByIdAsync(int userId)
@@ -211,6 +199,14 @@ namespace LMS.Infrastructure.Repository
                 .Include(e => e.Course)
                 .ToListAsync();
         }
+
+        #endregion
+
+
+
+
+
+
 
         
     }
