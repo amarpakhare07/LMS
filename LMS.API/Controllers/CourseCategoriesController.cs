@@ -53,8 +53,7 @@ namespace LMS.API.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin,Instructor")]
-        public async Task<IActionResult> UpdateCategory(
-            int id, [FromBody] CourseCategoryDto courseCategoryDto)
+        public async Task<IActionResult> UpdateCategory(int id, [FromBody] CourseCategoryDto courseCategoryDto)
         {
             if (id != courseCategoryDto.CategoryID)
             {
