@@ -27,7 +27,6 @@ namespace LMS.API.Controllers
                 Title = quizDto.Title,
                 TotalMarks = quizDto.TotalMarks,
                 TimeLimit = quizDto.TimeLimit,
-                CreatedAt = quizDto.CreatedAt,
                 AttemptsAllowed = quizDto.AttemptsAllowed,
             };
             return Ok(quiz);
