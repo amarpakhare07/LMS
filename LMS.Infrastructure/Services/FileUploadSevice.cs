@@ -1,10 +1,8 @@
-﻿using LMS.Infrastructure.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
 using System.Threading.Tasks;
+using LMS.Infrastructure.Services.Interfaces;
 
 namespace LMS.Infrastructure.Services
 {
@@ -16,9 +14,12 @@ namespace LMS.Infrastructure.Services
         {
             _uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
 
+            
+
             if (!Directory.Exists(_uploadPath))
                 Directory.CreateDirectory(_uploadPath);
         }
+
 
         public async Task<string> SaveFileAsync(IFormFile file, long maxSizeBytes)
         {
@@ -33,6 +34,8 @@ namespace LMS.Infrastructure.Services
             using var stream = new FileStream(filePath, FileMode.Create);
             await file.CopyToAsync(stream);
 
+            Console.WriteLine($"File saved: {filePath}");
+
             return file.FileName;
         }
 
@@ -45,7 +48,5 @@ namespace LMS.Infrastructure.Services
 
             return File.ReadAllBytes(filePath);
         }
-
-
     }
 }
