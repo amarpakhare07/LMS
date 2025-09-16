@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FileUpload.Controllers
+namespace LMS.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -37,7 +37,7 @@ namespace FileUpload.Controllers
                 await file.CopyToAsync(stream);
             }
 
-            return Ok(new { FileName = file.FileName, Message = "File uploaded successfully." });
+            return Ok(new { file.FileName, Message = "File uploaded successfully." });
         }
 
         

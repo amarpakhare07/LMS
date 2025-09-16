@@ -53,5 +53,10 @@ namespace LMS.Infrastructure.Repository
                         .ToListAsync();
 
         }
+
+        public async Task<bool> IsUserEnrolledAsync(EnrollRequestDto requestEnrollmentDto)
+        {
+            return await _dbContext.Enrollments.AnyAsync(e => e.UserID == requestEnrollmentDto.UserId && e.CourseID == requestEnrollmentDto.CourseId);
+        }
     }
 }
