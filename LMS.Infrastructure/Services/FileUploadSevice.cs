@@ -12,15 +12,14 @@ namespace LMS.Infrastructure.Services
 
         public FileUploadService()
         {
-            // Navigate up from bin/Debug to reach the solution root
-            var solutionRoot = Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).FullName).FullName;
+            _uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
 
-            // Point to LMS.API/Uploads folder
-            _uploadPath = Path.Combine(solutionRoot, "LMS.API", "Uploads");
+            Console.WriteLine($"Resolved upload path: {_uploadPath}");
 
             if (!Directory.Exists(_uploadPath))
                 Directory.CreateDirectory(_uploadPath);
         }
+
 
         public async Task<string> SaveFileAsync(IFormFile file, long maxSizeBytes)
         {
@@ -34,6 +33,8 @@ namespace LMS.Infrastructure.Services
 
             using var stream = new FileStream(filePath, FileMode.Create);
             await file.CopyToAsync(stream);
+
+            Console.WriteLine($"File saved: {filePath}");
 
             return file.FileName;
         }
