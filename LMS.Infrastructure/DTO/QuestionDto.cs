@@ -11,12 +11,12 @@ namespace LMS.Infrastructure.DTO
         public int QuestionID { get; set; }
         public int QuizID { get; set; }
         public string? QuestionText { get; set; }
+        public string? QuestionType { get; set; }
 
         public string? Options { get; set; }
         public int? Marks { get; set; }
-        public int? CorrectAnswer { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
+        public string? CorrectAnswer { get; set; }
+        
     }
 }
 

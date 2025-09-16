@@ -9,15 +9,13 @@ namespace LMS.Infrastructure.DTO
 {
     public class CreateQuestionDto
     {
-        [Required]
-        public int QuizID { get; set; }
-
-        [Required]
+        
+        [Required(ErrorMessage = "Question text is required.")]
         public string QuestionText { get; set; } = null!;
         public string? QuestionType { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Options are required.")]
         public string? Options { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Correct answer is required.")]
         public string? CorrectAnswer { get; set; }
         public int? Marks { get; set; }
     }
