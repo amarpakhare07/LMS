@@ -4,6 +4,8 @@ using LMS.Infrastructure.Services.Interfaces;
 
 namespace LMS.API.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class AnswerController : ControllerBase
     {
         private readonly IAnswerService answerService;

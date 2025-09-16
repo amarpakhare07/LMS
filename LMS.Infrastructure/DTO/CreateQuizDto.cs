@@ -18,8 +18,8 @@ namespace LMS.Infrastructure.DTO
         public int? TotalMarks { get; set; }
         public int? TimeLimit { get; set; } = 0;
         public int? AttemptsAllowed { get; set; }
-        public DateTime CreatedAt { get; set; }
+       // public DateTime CreatedAt { get; set; }
 
-        public List<QuestionDto>? Questions { get; set; }
+        public List<CreateQuestionDto>? Questions { get; set; }
     }
 }

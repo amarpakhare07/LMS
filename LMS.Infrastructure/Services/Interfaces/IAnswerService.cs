@@ -10,5 +10,6 @@ namespace LMS.Infrastructure.Services.Interfaces
     public interface IAnswerService
     {
         Task<CreateAnswerDto> CreateAnswerAsync(CreateAnswerDto answerDto);
+        
     }
 }
