@@ -41,7 +41,7 @@ namespace LMS.Domain.Models
         public ICollection<Answer> Answers { get; set; } = new List<Answer>();
         public ICollection<QuizScore> QuizScores { get; set; } = new List<QuizScore>();
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
-        public ICollection<Messages> Messages { get; set; } = new List<Messages>();
+        public ICollection<Message> Messages { get; set; } = new List<Message>();
 
     }
 }
