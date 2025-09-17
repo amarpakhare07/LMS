@@ -13,6 +13,8 @@ namespace LMS.Infrastructure.DTO
         public int QuestionID { get; set; }
         [Required]
         public int UserID { get; set; }
+        [Required]
+      
         public string? Response { get; set; }
         public bool IsCorrect { get; set; } = false;
     }
