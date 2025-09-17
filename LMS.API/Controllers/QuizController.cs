@@ -20,8 +20,16 @@ namespace LMS.API.Controllers
         //[Authorize(Roles = "Instructor")]
         public async Task<IActionResult> CreateQuizAsync([FromBody] CreateQuizDto createQuizDto)
         {
-            var quiz = await quizService.CreateQuizAsync(createQuizDto);
-            if(quiz == null) return BadRequest("Could not create quiz");
+            var quizDto = await quizService.CreateQuizAsync(createQuizDto);
+            if(quizDto == null) return BadRequest("Could not create quiz");     
+            var quiz = new Quiz
+            {
+                CourseID = quizDto.CourseID,
+                Title = quizDto.Title,
+                TotalMarks = quizDto.TotalMarks,
+                TimeLimit = quizDto.TimeLimit,
+                AttemptsAllowed = quizDto.AttemptsAllowed,
+            };
             return Ok(quiz);
         }
 

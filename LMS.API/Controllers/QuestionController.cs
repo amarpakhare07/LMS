@@ -8,7 +8,7 @@ namespace LMS.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Instructor")]
+    //[Authorize(Roles = "Instructor")]
     public class QuestionController : ControllerBase
     {
         private readonly IQuestionService questionService;
@@ -18,10 +18,10 @@ namespace LMS.API.Controllers
             this.questionService = questionService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateQuestion([FromBody] CreateQuestionDto createQuestion)
+        [HttpPost("{id}")]
+        public async Task<IActionResult> CreateQuestion([FromRoute] int id, [FromBody] CreateQuestionDto createQuestion)
         {
-            var question = await questionService.CreateQuestionAsync(createQuestion);
+            var question = await questionService.CreateQuestionAsync(id, createQuestion);
             return CreatedAtAction(nameof(GetQuestionById), new { id = question.QuestionID }, question);
         }
         [HttpGet("{id}")]

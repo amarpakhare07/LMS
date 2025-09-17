@@ -18,10 +18,11 @@ namespace LMS.Infrastructure.Services
             this.questionRepository = questionRepository;
         }
 
-        public async Task<QuestionDto> CreateQuestionAsync(CreateQuestionDto createQuestion)
+        public async Task<QuestionDto> CreateQuestionAsync(int id, CreateQuestionDto createQuestion)
         {
             var question = new Domain.Models.Question
             {
+                QuizID = id,
                 QuestionText = createQuestion.QuestionText,
                 QuestionType = createQuestion.QuestionType,
                 Options = createQuestion.Options,
