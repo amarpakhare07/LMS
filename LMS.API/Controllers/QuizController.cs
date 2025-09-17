@@ -21,6 +21,7 @@ namespace LMS.API.Controllers
         public async Task<IActionResult> CreateQuizAsync([FromBody] CreateQuizDto createQuizDto)
         {
             var quizDto = await quizService.CreateQuizAsync(createQuizDto);
+            if(quizDto == null) return BadRequest("Could not create quiz");     
             var quiz = new Quiz
             {
                 CourseID = quizDto.CourseID,

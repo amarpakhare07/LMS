@@ -11,6 +11,7 @@ namespace LMS.Infrastructure.DTO
         public int AnswerID { get; set; }
         public int QuestionID { get; set; }
         public int UserID { get; set; }
+
         public string? Response { get; set; }
         public int? MarksAwarded { get; set; }
         public DateTime SubmittedAt { get; set; }

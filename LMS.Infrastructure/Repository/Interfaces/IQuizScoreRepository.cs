@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace LMS.Infrastructure.Repository.Interfaces
 {
-    public interface IAnswerRepository
+    public interface IQuizScoreRepository
     {
-        Task<Answer> CreateAnswerAsync(Answer answer);
-        Task<IEnumerable<Answer>> GetAnswersByQuizAndUserAsync(int quizId, int userId);
+        Task<IEnumerable<QuizScore>> GetQuizScoresByCourseAsync(int courseId, int userId);
+        Task<QuizScore> CreateQuizScoreAsync(QuizScore quizScore);
     }
 }

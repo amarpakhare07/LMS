@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LMS.Domain.Models;
 using LMS.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace LMS.Infrastructure.Repository
 {
@@ -23,6 +24,14 @@ namespace LMS.Infrastructure.Repository
             await _context.SaveChangesAsync();
             return answer;
         }
-     
+
+        public async Task<IEnumerable<Answer>> GetAnswersByQuizAndUserAsync(int quizId, int userId)
+        {
+            var answers = _context.Answers
+                .Where(a => a.UserID == userId && a.QuizID == quizId);
+            return await answers.ToListAsync();
+        }
+
     }
+
 }
