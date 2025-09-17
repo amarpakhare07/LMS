@@ -2,6 +2,7 @@
 using LMS.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using LMS.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LMS.API.Controllers
 {
@@ -33,18 +34,18 @@ namespace LMS.API.Controllers
             return Ok(quiz);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("get-by-quizId/{quizId}")]
        
-        public async Task<IActionResult> GetQuizByIdAsync(int quizId)
+        public async Task<IActionResult> GetQuizByIdAsync([FromRoute] int quizId)
         {
             var quiz = await quizService.GetQuizByIdAsync(quizId);
             if (quiz == null) return NotFound();
             return Ok(quiz);
         }
 
-        [HttpGet]
-       
-        public async Task<IActionResult> GetQuizzesByCourseAsync(int courseId)
+        [HttpGet("get-by-courseId/{courseId}")]
+        //[Authorize(Roles ="Student, Instructor")]
+        public async Task<IActionResult> GetQuizzesByCourseAsync([FromRoute] int courseId)
         {
             var quizzes = await quizService.GetQuizzesByCourseAsync(courseId);
             return Ok(quizzes);
@@ -52,8 +53,8 @@ namespace LMS.API.Controllers
 
 
         [HttpDelete("{id}")]
-        //[Authorize(Roles = "Instructor")]
-        public async Task<IActionResult> DeleteQuizAsync(int id)
+        [Authorize(Roles = "Instructor")]
+        public async Task<IActionResult> DeleteQuizAsync([FromRoute] int id)
         {
             var success = await quizService.DeleteQuizAsync(id);
             if (success)

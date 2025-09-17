@@ -13,7 +13,7 @@ namespace LMS.Infrastructure.DTO
         public string? QuestionText { get; set; }
         public string? QuestionType { get; set; }
 
-        public string? Options { get; set; }
+        public List<string>? Options { get; set; }
         public int? Marks { get; set; }
         public string? CorrectAnswer { get; set; }
         

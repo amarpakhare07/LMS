@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using LMS.Domain.Models;
 
 namespace LMS.Infrastructure.DTO
 {
@@ -14,7 +15,7 @@ namespace LMS.Infrastructure.DTO
         public string QuestionText { get; set; } = null!;
         public string? QuestionType { get; set; }
         [Required(ErrorMessage = "Options are required.")]
-        public string? Options { get; set; }
+        public List<string>? Options { get; set; }
         [Required(ErrorMessage = "Correct answer is required.")]
         public string? CorrectAnswer { get; set; }
         public int? Marks { get; set; }

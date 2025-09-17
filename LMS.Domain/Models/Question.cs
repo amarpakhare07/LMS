@@ -12,7 +12,7 @@ namespace LMS.Domain.Models
         public int QuizID { get; set; }
         public string QuestionText { get; set; } = null!;
         public string? QuestionType { get; set; }
-        public string? Options { get; set; } // JSON stored as varchar(max)
+        public List<string>? Options { get; set; } // JSON stored as varchar(max)
         public string? CorrectAnswer { get; set; }
         public int? Marks { get; set; }
         public DateTime CreatedAt { get; set; }

@@ -69,7 +69,6 @@ namespace LMS.Infrastructure.Services
                 TotalMarks = createQuizDto.TotalMarks, 
                 TimeLimit = createQuizDto.TimeLimit,
                 AttemptsAllowed = createQuizDto.AttemptsAllowed,
-                CreatedAt = DateTime.UtcNow,
             };
             var createdQuiz = await quizRepository.CreateQuizAsync(newQuiz);
             var quizDto = new QuizDto
