@@ -1,8 +1,11 @@
-﻿using LMS.Infrastructure.DTO;
+﻿using LMS.Domain.Models;
+using LMS.Infrastructure.DTO;
+using LMS.Infrastructure.Services;
 using LMS.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace LMS.API.Controllers
 {
@@ -11,10 +14,16 @@ namespace LMS.API.Controllers
     public class CourseController : ControllerBase
     {
         private readonly ICourseService courseService;
+        private readonly IFileUploadService _fileUploadService;
+        private readonly FileUploadLimits _limits;
 
-        public CourseController(ICourseService courseService)
+        public CourseController(ICourseService courseService, IFileUploadService fileService,
+            IOptions<FileUploadLimits> limits)
         {
             this.courseService = courseService;
+            _fileUploadService = fileService;
+            _limits = limits.Value;
+
         }
 
         // Implementation goes here
@@ -71,6 +80,28 @@ namespace LMS.API.Controllers
                 return NoContent();
             }
             return NotFound();
+        }
+
+
+        // COURSE MATERIAL UPLOAD
+        [HttpPost("course/document")]
+        [Authorize(Roles = "Instructor")]
+        public async Task<IActionResult> UploadDocument(IFormFile file)
+        {
+            if (file == null)
+                return BadRequest(new { Message = "No file received." });
+
+            try
+            {
+                var fileName = await _fileUploadService.SaveFileAsync(file, _limits.DocumentMaxSize);
+                return Ok(new { FileName = fileName, Message = "Document uploaded successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+
+
         }
     }
 }

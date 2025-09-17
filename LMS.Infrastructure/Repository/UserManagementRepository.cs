@@ -200,6 +200,23 @@ namespace LMS.Infrastructure.Repository
                 .ToListAsync();
         }
 
+        public Task GetByIdAsync(object userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> UpdateProfilePictureAsync(int userId, string fileName)
+        {
+            var user = await _dbContext.Users.FindAsync(userId);
+            if (user == null) return false;
+
+            user.ProfilePicture = fileName;
+            user.UpdatedAt = DateTime.UtcNow;
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+
         #endregion
 
 
@@ -208,6 +225,6 @@ namespace LMS.Infrastructure.Repository
 
 
 
-        
+
     }
 }

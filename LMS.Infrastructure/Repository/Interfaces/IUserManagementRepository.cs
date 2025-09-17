@@ -30,5 +30,8 @@ namespace LMS.Infrastructure.Repository.Interfaces
         Task<bool> CreateUserAsync(CreateUserDto user);
         Task<bool> UpdateUserStatusAsync(string email, bool isActive);
         Task<bool> DeleteUserAsync(string email);
+        Task GetByIdAsync(object userId);
+        Task<bool> UpdateProfilePictureAsync(int userId, string fileName);
+
     }
 }
