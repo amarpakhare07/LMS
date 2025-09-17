@@ -152,7 +152,17 @@ namespace LMS.API.Controllers
             try
             {
                 var fileName = await _fileService.SaveFileAsync(file, _limits.ProfileImageMaxSize);
-                return Ok(new { FileName = fileName, Message = "Profile image uploaded successfully." });
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!int.TryParse(userIdClaim, out int userId))
+                    return Unauthorized();
+                var user = await _userManagementRepository.GetByIdAsync(userId);
+                await _userManagementRepository.UpdateProfilePictureAsync(user.UserID, fileName);
+
+
+                return Ok(new { FileName = fileName, Message = "Profile image uploaded successfully." + fileName });
+
+                
+
             }
             catch (Exception ex)
             {
