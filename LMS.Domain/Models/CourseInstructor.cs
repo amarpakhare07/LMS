@@ -15,5 +15,6 @@ namespace LMS.Domain.Models
         // Navigation properties for the single related entities.
         public Course Course { get; set; } = null!;
         public User User { get; set; } = null!;
+        public string? CourseMaterial { get; set; }
     }
 }

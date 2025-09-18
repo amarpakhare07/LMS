@@ -11,6 +11,7 @@ namespace LMS.Infrastructure.Services.Interfaces
     {
         Task<string> SaveFileAsync(IFormFile file, long maxSizeBytes);
 
+        Task<bool> SaveCourseDocumentAsync(int courseId, int instructorId, string fileName);
         byte[] GetFile(string fileName);
     }
 }

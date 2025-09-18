@@ -1,17 +1,21 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using LMS.Domain;
+using LMS.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using LMS.Infrastructure.Services.Interfaces;
 
 namespace LMS.Infrastructure.Services
 {
     public class FileUploadService : IFileUploadService
     {
         private readonly string _uploadPath;
+        private readonly LmsDbContext _context;
 
-        public FileUploadService()
+        public FileUploadService(LmsDbContext context)
         {
+            _context = context;
             _uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
 
             
@@ -48,5 +52,18 @@ namespace LMS.Infrastructure.Services
 
             return File.ReadAllBytes(filePath);
         }
+        public async Task<bool> SaveCourseDocumentAsync(int courseId, int userId, string fileName)
+        {
+            var courseInstructor = await _context.CourseInstructors
+                .FirstOrDefaultAsync(ci => ci.CourseID == courseId && ci.UserID == userId);
+
+            if (courseInstructor == null)
+                return false;
+
+            courseInstructor.CourseMaterial = fileName;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
     }
 }
