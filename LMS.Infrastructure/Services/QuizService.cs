@@ -71,7 +71,7 @@ namespace LMS.Infrastructure.Services
                 AttemptsAllowed = createQuizDto.AttemptsAllowed,
             };
             var createdQuiz = await quizRepository.CreateQuizAsync(newQuiz);
-            var quizDto = new QuizDto
+            return new QuizDto
             {
                 QuizID = createdQuiz.QuizID,
                 CourseID = createdQuiz.CourseID,
@@ -81,7 +81,7 @@ namespace LMS.Infrastructure.Services
                 CreatedAt = createdQuiz.CreatedAt,
                 AttemptsAllowed = createdQuiz.AttemptsAllowed,
             };
-            return quizDto;
+            
         }
 
         public async Task<bool> DeleteQuizAsync(int quizId)
