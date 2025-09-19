@@ -1,4 +1,5 @@
-﻿using LMS.Domain.Models;
+﻿using LMS.Domain;
+using LMS.Domain.Models;
 using LMS.Infrastructure.DTO;
 using LMS.Infrastructure.Services;
 using LMS.Infrastructure.Services.Interfaces;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.Security.Claims;
 
 namespace LMS.API.Controllers
 {
@@ -16,6 +18,8 @@ namespace LMS.API.Controllers
         private readonly ICourseService courseService;
         private readonly IFileUploadService _fileUploadService;
         private readonly FileUploadLimits _limits;
+        
+
 
         public CourseController(ICourseService courseService, IFileUploadService fileService,
             IOptions<FileUploadLimits> limits)
@@ -23,7 +27,7 @@ namespace LMS.API.Controllers
             this.courseService = courseService;
             _fileUploadService = fileService;
             _limits = limits.Value;
-
+            
         }
 
         // Implementation goes here
@@ -84,24 +88,31 @@ namespace LMS.API.Controllers
 
 
         // COURSE MATERIAL UPLOAD
-        [HttpPost("course/document")]
+        [HttpPost("{courseId}/document")]
         [Authorize(Roles = "Instructor")]
-        public async Task<IActionResult> UploadDocument(IFormFile file)
+        public async Task<IActionResult> UploadCourseDocument(int courseId, IFormFile file)
         {
             if (file == null)
-                return BadRequest(new { Message = "No file received." });
+                return BadRequest(new { Message = "No file received" });
 
             try
             {
                 var fileName = await _fileUploadService.SaveFileAsync(file, _limits.DocumentMaxSize);
-                return Ok(new { FileName = fileName, Message = "Document uploaded successfully." });
+
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!int.TryParse(userIdClaim, out int userId))
+                    return Unauthorized();
+
+                var success = await _fileUploadService.SaveCourseDocumentAsync(courseId, userId, fileName);
+                if (!success)
+                    return NotFound(new { Message = "CourseInstructor record not found" });
+
+                return Ok(new { FileName = fileName, Message = "Course material uploaded and saved" });
             }
             catch (Exception ex)
             {
                 return BadRequest(new { Message = ex.Message });
             }
-
-
         }
     }
 }

@@ -157,7 +157,7 @@ namespace LMS.API.Controllers
                     return Unauthorized();
                 var user = await _userManagementRepository.GetByIdAsync(userId);
                 await _userManagementRepository.UpdateProfilePictureAsync(user.UserID, fileName);
-
+                   
 
                 return Ok(new { FileName = fileName, Message = "Profile image uploaded successfully." + fileName });
 
