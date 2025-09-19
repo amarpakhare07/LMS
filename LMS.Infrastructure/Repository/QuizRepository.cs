@@ -38,7 +38,6 @@ namespace LMS.Infrastructure.Repository
 
         public async Task<Quiz> CreateQuizAsync(Quiz quiz)
         {
-            //quiz.CreatedAt = DateTime.UtcNow;
             await dbContext.Quizzes.AddAsync(quiz);
             await dbContext.SaveChangesAsync();
             return quiz;

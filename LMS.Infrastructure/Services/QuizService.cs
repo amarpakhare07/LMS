@@ -69,10 +69,9 @@ namespace LMS.Infrastructure.Services
                 TotalMarks = createQuizDto.TotalMarks, 
                 TimeLimit = createQuizDto.TimeLimit,
                 AttemptsAllowed = createQuizDto.AttemptsAllowed,
-                CreatedAt = DateTime.UtcNow,
             };
             var createdQuiz = await quizRepository.CreateQuizAsync(newQuiz);
-            var quizDto = new QuizDto
+            return new QuizDto
             {
                 QuizID = createdQuiz.QuizID,
                 CourseID = createdQuiz.CourseID,
@@ -82,7 +81,7 @@ namespace LMS.Infrastructure.Services
                 CreatedAt = createdQuiz.CreatedAt,
                 AttemptsAllowed = createdQuiz.AttemptsAllowed,
             };
-            return quizDto;
+            
         }
 
         public async Task<bool> DeleteQuizAsync(int quizId)

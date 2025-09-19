@@ -1,5 +1,6 @@
 ﻿using LMS.Domain;
 using LMS.Domain.Models;
+using LMS.Infrastructure.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace LMS.Infrastructure.Repository
 {
-    public class QuizScoreRepository
+    public class QuizScoreRepository : IQuizScoreRepository
     {
         private readonly LmsDbContext _dbContext;
         public QuizScoreRepository(LmsDbContext context)

@@ -41,23 +41,25 @@ namespace LMS.API
 
             builder.Services.AddScoped<IUserManagementRepository, UserManagementRepository>();
             builder.Services.AddScoped<IEmailSenderRepository, EmailSenderRepository>();
-
             builder.Services.AddScoped<ICourseRepository, CourseRepository>();
-
             builder.Services.AddScoped<IMessageRepository, MessageRepository>();
             builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
+            builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
+            builder.Services.AddScoped<ICourseCategoryRepository, CourseCategoryRepository>();
+            builder.Services.AddScoped<IQuestionRepository , QuestionRepository>();
+            builder.Services.AddScoped<ILessonRepository, LessonRepository>();
+            builder.Services.AddScoped<IQuizRepository, QuizRepository>();
+            builder.Services.AddScoped<IQuizScoreRepository, QuizScoreRepository>();
+            builder.Services.AddScoped<IAnswerRepository, AnswerRepository>();
+            builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
 
             builder.Services.AddScoped<ICourseService, CourseService>();
-
-            builder.Services.AddScoped<IEnrollmentRepository, EnrollmentRepository>();
-
-            builder.Services.AddScoped<ICourseCategoryRepository, CourseCategoryRepository>();
             builder.Services.AddScoped<ICourseCategoryService, CourseCategoryService>();
-
-            builder.Services.AddScoped<IQuestionRepository , QuestionRepository>();
             builder.Services.AddScoped<IQuestionService, QuestionService>();
+            builder.Services.AddScoped<IQuizService, QuizService>();
+            builder.Services.AddScoped<IQuizScoreService, QuizScoreService>();
 
-            builder.Services.AddScoped<ILessonRepository, LessonRepository>();
+            builder.Services.AddScoped<IAnswerService, AnswerService>();
             builder.Services.AddScoped<ILessonService, LessonService>();
 
             //------------------

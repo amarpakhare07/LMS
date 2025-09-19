@@ -20,6 +20,6 @@ namespace LMS.Infrastructure.DTO
         public int? AttemptsAllowed { get; set; }
        // public DateTime CreatedAt { get; set; }
 
-        public List<CreateQuestionDto>? Questions { get; set; }
+        //public List<CreateQuestionDto>? Questions { get; set; }
     }
 }
