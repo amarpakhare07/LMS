@@ -6,17 +6,18 @@ using System.Threading.Tasks;
 
 namespace LMS.Domain.Models
 {
-    public class Messages
+    public class Message
     {
         public int MessageID { get; set; }
-        public int UserID { get; set; }
-        public string Message { get; set; } = null!;
+        public int SenderID { get; set; }
+        public User Sender { get; set; } = null!;
+        public int ReceiverID { get; set; }
+        public User Receiver { get; set; } = null!;
+        public string Content { get; set; } = null!;
         public bool IsRead { get; set; }
         public DateTime CreatedAt { get; set; }
         public string? MessageType { get; set; }
-        public string? TargetURL { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
-        public User User { get; set; } = null!;
     }
 }

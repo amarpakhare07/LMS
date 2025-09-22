@@ -15,7 +15,7 @@ namespace LMS.Domain.Models
         public string? CompletionStatus { get; set; }
         public string? CertificateURL { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         // Navigation properties for the single related entities.
         public Course Course { get; set; } = null!;

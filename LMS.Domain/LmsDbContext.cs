@@ -26,7 +26,7 @@ namespace LMS.Domain
         public DbSet<Answer> Answers { get; set; }
         public DbSet<QuizScore> QuizScores { get; set; }
         public DbSet<Comment> Comments { get; set; }
-        public DbSet<Messages> Notifications { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

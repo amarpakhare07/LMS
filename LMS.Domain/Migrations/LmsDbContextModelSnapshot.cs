@@ -30,6 +30,9 @@ namespace LMS.Domain.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AnswerID"));
 
+                    b.Property<int>("AttemptNumber")
+                        .HasColumnType("int");
+
                     b.Property<bool?>("IsCorrect")
                         .HasColumnType("bit");
 
@@ -37,6 +40,9 @@ namespace LMS.Domain.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("QuestionID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuizID")
                         .HasColumnType("int");
 
                     b.Property<string>("Response")
@@ -231,6 +237,9 @@ namespace LMS.Domain.Migrations
                     b.Property<DateTime>("AssignedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("CourseMaterial")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("CourseID", "UserID");
 
                     b.HasIndex("UserID");
@@ -340,13 +349,18 @@ namespace LMS.Domain.Migrations
                     b.ToTable("lessons", (string)null);
                 });
 
-            modelBuilder.Entity("LMS.Domain.Models.Messages", b =>
+            modelBuilder.Entity("LMS.Domain.Models.Message", b =>
                 {
                     b.Property<int>("MessageID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MessageID"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -363,27 +377,27 @@ namespace LMS.Domain.Migrations
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(max)");
-
                     b.Property<string>("MessageType")
                         .HasMaxLength(50)
                         .IsUnicode(false)
                         .HasColumnType("varchar(50)");
 
-                    b.Property<string>("TargetURL")
-                        .HasMaxLength(2048)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(2048)");
+                    b.Property<int>("ReceiverID")
+                        .HasColumnType("int");
 
-                    b.Property<int>("UserID")
+                    b.Property<int>("SenderID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UserID")
                         .HasColumnType("int");
 
                     b.HasKey("MessageID");
 
-                    b.HasIndex("UserID", "IsRead", "CreatedAt");
+                    b.HasIndex("SenderID");
+
+                    b.HasIndex("UserID");
+
+                    b.HasIndex("ReceiverID", "IsRead", "CreatedAt");
 
                     b.ToTable("messages", (string)null);
                 });
@@ -449,7 +463,7 @@ namespace LMS.Domain.Migrations
                     b.Property<int?>("Marks")
                         .HasColumnType("int");
 
-                    b.Property<string>("Options")
+                    b.PrimitiveCollection<string>("Options")
                         .IsUnicode(false)
                         .HasColumnType("varchar(max)");
 
@@ -610,6 +624,12 @@ namespace LMS.Domain.Migrations
                         .IsUnicode(false)
                         .HasColumnType("varchar(2048)");
 
+                    b.Property<string>("ResetToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ResetTokenExpiry")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
@@ -743,15 +763,27 @@ namespace LMS.Domain.Migrations
                     b.Navigation("Course");
                 });
 
-            modelBuilder.Entity("LMS.Domain.Models.Messages", b =>
+            modelBuilder.Entity("LMS.Domain.Models.Message", b =>
                 {
-                    b.HasOne("LMS.Domain.Models.User", "User")
-                        .WithMany("Messages")
-                        .HasForeignKey("UserID")
+                    b.HasOne("LMS.Domain.Models.User", "Receiver")
+                        .WithMany()
+                        .HasForeignKey("ReceiverID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LMS.Domain.Models.User", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.HasOne("LMS.Domain.Models.User", null)
+                        .WithMany("Messages")
+                        .HasForeignKey("UserID");
+
+                    b.Navigation("Receiver");
+
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("LMS.Domain.Models.Progress", b =>

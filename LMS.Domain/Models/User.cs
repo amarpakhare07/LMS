@@ -22,6 +22,8 @@ namespace LMS.Domain.Models
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public DateTime? LastLogin { get; set; }
+        public string? ResetToken { get; set; } = null;
+        public DateTime? ResetTokenExpiry { get; set; } = null;
         public UserRole Role { get; set; } = UserRole.Student; // Default role is Student
         public bool IsDeleted { get; set; }
 
@@ -39,7 +41,7 @@ namespace LMS.Domain.Models
         public ICollection<Answer> Answers { get; set; } = new List<Answer>();
         public ICollection<QuizScore> QuizScores { get; set; } = new List<QuizScore>();
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
-        public ICollection<Messages> Messages { get; set; } = new List<Messages>();
+        public ICollection<Message> Messages { get; set; } = new List<Message>();
 
     }
 }
