@@ -11,9 +11,9 @@ namespace LMS.Infrastructure.Repository.Interfaces
     public interface IEnrollmentRepository
     {
 
-        Task<bool> IsUserEnrolledAsync(EnrollRequestDto requestEnrollmentDto);
+        Task<bool> IsUserEnrolledAsync(int courseId, int userId);
 
-        Task<bool> EnrollUserAsync(EnrollRequestDto requestEnrollmentDto);
+        Task<bool> EnrollUserAsync(int courseId, int userId);
 
         Task<List<Course>> GetEnrolledCoursesAsync(int userId);
 

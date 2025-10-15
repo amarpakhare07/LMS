@@ -1,11 +1,7 @@
-﻿using LMS.Domain;
-using LMS.Domain.Models;
-using LMS.Infrastructure.DTO;
+﻿using LMS.Infrastructure.DTO;
 using LMS.Infrastructure.Repository.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace LMS.API.Controllers
 {
@@ -23,13 +19,15 @@ namespace LMS.API.Controllers
         [Authorize(Roles = "Student")]  // Only students can enroll in courses
         public async Task<IActionResult> EnrollUser([FromBody] EnrollRequestDto requestEnrollmentDto)
         {
-            
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+
             if (requestEnrollmentDto == null)
                 {
-                return BadRequest("Invalid enrollment data.");
+                return BadRequest("Invalid Course.");
             }
             // Simulate enrollment logic here
-            var result = await _enrollmentRepository.EnrollUserAsync(requestEnrollmentDto);
+            var result = await _enrollmentRepository.EnrollUserAsync(requestEnrollmentDto.CourseId, int.Parse(userId));
 
             if (!result)
                 return BadRequest("Enrollment failed.");
@@ -41,16 +39,22 @@ namespace LMS.API.Controllers
         [Authorize(Roles = "Student,Instructor,Admin")]  // Students, Instructors, and Admins can check enrollment status
         public async Task<bool> IsUserEnrolledAsync(EnrollRequestDto requestEnrollmentDto)
         {
-            return await _enrollmentRepository.IsUserEnrolledAsync(requestEnrollmentDto);
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            return await _enrollmentRepository.IsUserEnrolledAsync(requestEnrollmentDto.CourseId, int.Parse(userId));
         }
 
 
-        [HttpGet("user/{userId}/courses")]
+        [HttpGet("user/courses")]
         [Authorize(Roles = "Student,Instructor,Admin")]  // Students, Instructors, and Admins can view enrolled courses
-        public async Task<IActionResult> GetEnrolledCourses(string userId)
+        public async Task<IActionResult> GetEnrolledCourses()
         {
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
-
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("Invalid user ID.");
+            }
 
            var courses = await _enrollmentRepository.GetEnrolledCoursesAsync(int.Parse(userId));
 

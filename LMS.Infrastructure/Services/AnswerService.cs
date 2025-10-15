@@ -21,12 +21,12 @@ namespace LMS.Infrastructure.Services
             this.questionRepository = questionRepository;
         }
 
-        public async Task<CreateAnswerDto> CreateAnswerAsync(CreateAnswerDto createAnswerDto)
+        public async Task<CreateAnswerDto> CreateAnswerAsync(CreateAnswerDto createAnswerDto, int userId)
         {
             var answer = new Answer
             {
                 QuestionID = createAnswerDto.QuestionID,
-                UserID = createAnswerDto.UserID,
+                UserID = userId,
                 Response = createAnswerDto.Response,
             };
             var question = await questionRepository.GetQuestionByIdAsync(createAnswerDto.QuestionID);
@@ -43,7 +43,6 @@ namespace LMS.Infrastructure.Services
             return new CreateAnswerDto
             {
                 QuestionID = createdAnswer.QuestionID,
-                UserID = createdAnswer.UserID,
                 Response = createdAnswer.Response,
                 IsCorrect = (bool)createdAnswer.IsCorrect
             };

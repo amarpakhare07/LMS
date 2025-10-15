@@ -18,7 +18,7 @@ namespace LMS.API.Controllers
 
       
         [HttpPost]
-        //[Authorize(Roles = "Instructor")]
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> CreateQuizAsync([FromBody] CreateQuizDto createQuizDto)
         {
             var quizDto = await quizService.CreateQuizAsync(createQuizDto);
@@ -36,7 +36,7 @@ namespace LMS.API.Controllers
         }
 
         [HttpGet("get-by-courseId/{courseId}")]
-        //[Authorize(Roles ="Student, Instructor")]
+        [Authorize(Roles = "Student, Instructor")]
         public async Task<IActionResult> GetQuizzesByCourseAsync([FromRoute] int courseId)
         {
             var quizzes = await quizService.GetQuizzesByCourseAsync(courseId);
