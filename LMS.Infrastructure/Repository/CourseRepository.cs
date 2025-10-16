@@ -56,5 +56,14 @@ namespace LMS.Infrastructure.Repository
             await dbContext.SaveChangesAsync();
             return true;
         }
+
+        
+
+        public async Task<bool> UpdateCourseStatusAsync(Course course)
+        {
+            dbContext.Courses.Update(course);
+            await dbContext.SaveChangesAsync();
+            return true;
+        }
     }
 }

@@ -120,5 +120,15 @@ namespace LMS.Infrastructure.Services
         {
             return await courseRepository.DeleteCourseAsync(id);
         }
+
+        public Task<bool> UpdateCourseStatusAsync(int courseId, UpdateCourseStatusDto updateCourseStatusDto)
+        {
+            var course = courseRepository.GetCourseByIdAsync(courseId).Result;
+            if (course == null) return Task.FromResult(false);
+
+            course.Published = updateCourseStatusDto.Published;
+
+            return courseRepository.UpdateCourseStatusAsync(course);
+        }
     }
 }

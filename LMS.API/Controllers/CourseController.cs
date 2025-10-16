@@ -71,6 +71,18 @@ namespace LMS.API.Controllers
             return NotFound();
         }
 
+        [HttpPut("status/{courseId}")]
+        [Authorize(Roles = "Admin,Instructor")]
+        public async Task<IActionResult> UpdateCourseStatus(int courseId, [FromBody] UpdateCourseStatusDto updateCourseStatusDto)
+        {
+            var success = await courseService.UpdateCourseStatusAsync(courseId,updateCourseStatusDto);
+            if (success != null)
+            {
+                return NoContent();
+            }
+            return NotFound();
+        }
+
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin,Instructor")]
         public async Task<IActionResult> DeleteCourse(int id)

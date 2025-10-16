@@ -13,6 +13,7 @@ namespace LMS.Infrastructure.Services.Interfaces
         Task<CourseDto> GetCourseByIdAsync(int id);
         Task<IEnumerable<CourseDto>> GetAllCoursesAsync();
         Task<bool> UpdateCourseAsync(CourseDto courseDto);
+        Task<bool> UpdateCourseStatusAsync(int courseId, UpdateCourseStatusDto updateCourseStatusDto);
         Task<bool> DeleteCourseAsync(int id);
     }
 }

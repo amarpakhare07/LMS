@@ -13,6 +13,7 @@ namespace LMS.Infrastructure.Repository.Interfaces
         Task<Course?> GetCourseByIdAsync(int id);
         Task<IEnumerable<Course>> GetAllCoursesAsync();
         Task<bool> UpdateCourseAsync(Course course);
+        Task<bool> UpdateCourseStatusAsync(Course course);
         Task<bool> DeleteCourseAsync(int id);
 
     }
