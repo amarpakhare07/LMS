@@ -22,6 +22,7 @@ namespace LMS.Infrastructure.DTO
         public bool Published { get; set; }
         public double? Rating { get; set; }
         public int? ReviewCount { get; set; }
-        
+        public List<LessonDto> Lessons { get; set; } = new();
+
     }
 }

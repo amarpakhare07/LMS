@@ -69,7 +69,21 @@ namespace LMS.Infrastructure.Services
                 CategoryID = course.CategoryID,
                 Published = course.Published,
                 Rating = course.Rating,
-                ReviewCount = course.ReviewCount
+                ReviewCount = course.ReviewCount,
+                Lessons = course.Lessons
+                                .Where(l => !l.IsDeleted)
+                                .OrderBy(l => l.OrderIndex)
+                                .Select(l => new LessonDto
+                                {
+                                    LessonID = l.LessonID,
+                                    Title = l.Title,
+                                    Content = l.Content,
+                                    VideoURL = l.VideoURL,
+                                    OrderIndex = l.OrderIndex,
+                                    LessonType = l.LessonType,
+                                    EstimatedTime = l.EstimatedTime
+                                }).ToList()
+
             };
         }
 

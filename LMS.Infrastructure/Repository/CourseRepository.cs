@@ -45,9 +45,10 @@ namespace LMS.Infrastructure.Repository
 
         public async Task<Course?> GetCourseByIdAsync(int id)
         {
-            return await dbContext.Courses
-                .Include(c => c.Category)
-                .FirstOrDefaultAsync(c => c.CourseID == id);
+            return await dbContext.Courses.Include(c => c.Category)
+                                          .Include(c => c.Lessons)
+                                          .FirstOrDefaultAsync(c => c.CourseID == id && !c.IsDeleted);
+
         }
 
         public async Task<bool> UpdateCourseAsync(Course course)
