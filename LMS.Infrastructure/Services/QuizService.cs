@@ -3,21 +3,21 @@ using LMS.Infrastructure.Repository.Interfaces;
 using LMS.Domain.Models;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using LMS.Infrastructure.Services.Interfaces;
-
 
 namespace LMS.Infrastructure.Services
 {
     public class QuizService : IQuizService
     {
         private readonly IQuizRepository quizRepository;
-        public QuizService(IQuizRepository quizRepository)
+        private readonly IAnswerRepository answerRepository;
+
+        public QuizService(IQuizRepository quizRepository, IAnswerRepository answerRepository)
         {
             this.quizRepository = quizRepository;
+            this.answerRepository = answerRepository;
         }
 
         public async Task<IEnumerable<QuizDto>> GetQuizzesByCourseAsync(int courseId)
@@ -26,7 +26,7 @@ namespace LMS.Infrastructure.Services
             if (quizzes == null) return new List<QuizDto>();
 
             var quizDtos = new List<QuizDto>();
-            foreach(var quizDto in quizzes)
+            foreach (var quizDto in quizzes)
             {
                 quizDtos.Add(new QuizDto
                 {
@@ -37,9 +37,7 @@ namespace LMS.Infrastructure.Services
                     TimeLimit = quizDto.TimeLimit,
                     CreatedAt = quizDto.CreatedAt,
                     AttemptsAllowed = quizDto.AttemptsAllowed,
-
                 });
-
             }
             return quizDtos;
         }
@@ -66,7 +64,7 @@ namespace LMS.Infrastructure.Services
             {
                 CourseID = createQuizDto.CourseID,
                 Title = createQuizDto.Title,
-                TotalMarks = createQuizDto.TotalMarks, 
+                TotalMarks = createQuizDto.TotalMarks,
                 TimeLimit = createQuizDto.TimeLimit,
                 AttemptsAllowed = createQuizDto.AttemptsAllowed,
             };
@@ -81,12 +79,44 @@ namespace LMS.Infrastructure.Services
                 CreatedAt = createdQuiz.CreatedAt,
                 AttemptsAllowed = createdQuiz.AttemptsAllowed,
             };
-            
         }
 
         public async Task<bool> DeleteQuizAsync(int quizId)
         {
             return await quizRepository.DeleteQuizAsync(quizId) != null;
+        }
+
+        public async Task<StartQuizResponseDto> StartQuizAsync(int quizId, int userId)
+        {
+            // Get quiz details
+            var quiz = await quizRepository.GetQuizByIdAsync(quizId);
+            if (quiz == null)
+                throw new Exception("Quiz not found.");
+
+            // Get previous attempts
+            var previousAnswers = await answerRepository.GetAnswersByQuizAndUserAsync(quizId, userId);
+            int currentAttemptNumber = previousAnswers.Any()
+                ? previousAnswers.Max(a => a.AttemptNumber) + 1
+                : 1;
+
+            // Check if attempts exceeded
+            if (quiz.AttemptsAllowed.HasValue && currentAttemptNumber > quiz.AttemptsAllowed.Value)
+            {
+                throw new InvalidOperationException($"Maximum attempts ({quiz.AttemptsAllowed.Value}) reached for this quiz.");
+            }
+
+            return new StartQuizResponseDto
+            {
+                QuizID = quiz.QuizID,
+                Title = quiz.Title,
+                TotalMarks = quiz.TotalMarks,
+                TimeLimit = quiz.TimeLimit,
+                AttemptsAllowed = quiz.AttemptsAllowed,
+                CurrentAttemptNumber = currentAttemptNumber,
+                RemainingAttempts = quiz.AttemptsAllowed.HasValue
+                    ? quiz.AttemptsAllowed.Value - currentAttemptNumber + 1
+                    : null
+            };
         }
     }
 }

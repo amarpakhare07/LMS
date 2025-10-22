@@ -1,8 +1,5 @@
 ﻿using LMS.Infrastructure.DTO;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LMS.Infrastructure.Services.Interfaces
@@ -11,7 +8,5 @@ namespace LMS.Infrastructure.Services.Interfaces
     {
         Task<IEnumerable<QuizScoreDto>> GetQuizScoresByCourseAsync(int courseId, int userId);
         Task<CreateQuizScoreDto> CreateQuizScoreAsync(CreateQuizScoreDto createQuizScoreDto);
-
-        
     }
 }
