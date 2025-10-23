@@ -33,5 +33,10 @@ namespace LMS.Infrastructure.Repository.Interfaces
         Task GetByIdAsync(object userId);
         Task<bool> UpdateProfilePictureAsync(int userId, string fileName);
 
+        // Instructor functionalities
+
+        
+
+        Task<InstructorDto> GetInstructorStatisticsAsync(int instructorId);
     }
 }

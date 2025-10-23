@@ -116,7 +116,7 @@ namespace LMS.API.Controllers
         // Showing courses enrolled by user
 
         [HttpGet("me/courses")]
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetUserEnrolledCourse()
         {
             var userIdClaims = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -146,7 +146,7 @@ namespace LMS.API.Controllers
 
         // Upload profile picture
         [HttpPost("me/profilePicture")]
-        [Authorize(Roles ="Student")]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> UploadProfileImage(IFormFile file)
         {
             try
@@ -157,11 +157,11 @@ namespace LMS.API.Controllers
                     return Unauthorized();
                 var user = await _userManagementRepository.GetByIdAsync(userId);
                 await _userManagementRepository.UpdateProfilePictureAsync(user.UserID, fileName);
-                   
+
 
                 return Ok(new { FileName = fileName, Message = "Profile image uploaded successfully." + fileName });
 
-                
+
 
             }
             catch (Exception ex)
@@ -274,5 +274,59 @@ namespace LMS.API.Controllers
 
         #endregion
 
+        #region Instructor Functionalities
+
+        //[HttpGet("instructor/courses/count")]
+        //[Authorize(Roles = "Instructor")]
+        //public async Task<IActionResult> GetTotalCoursesByInstructor()
+        //{
+        //    var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        //    if (!int.TryParse(userIdClaim, out int instructorId))
+        //        return Unauthorized();
+        //    var totalCourses = await _userManagementRepository.GetTotalCoursesByInstructorAsync(instructorId);
+        //    return Ok(new { TotalCourses = totalCourses });
+        //}
+
+        //[HttpGet("instructor/students/count")]
+        //[Authorize(Roles = "Instructor")]
+        //public async Task<IActionResult> GetTotalStudentsByInstructor()
+        //{
+        //    var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        //    if (!int.TryParse(userIdClaim, out int instructorId))
+        //        return Unauthorized();
+        //    var totalStudents = await _userManagementRepository.GetTotalStudentsByInstructorAsync(instructorId);
+        //    return Ok(new { TotalStudents = totalStudents });
+        //}
+
+        [HttpGet("instructor/analytics")]
+        [Authorize(Roles = "Instructor")]
+        public async Task<IActionResult> GetInstructorAnalytics()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim == null || !int.TryParse(userIdClaim, out int userId))
+                return Unauthorized();
+
+            // 🚨 4. CALL THE REPOSITORY TO GET ALL METRICS
+            // The repository performs the logic for Total Students, Courses, and Videos.
+            var metrics = await _userManagementRepository.GetInstructorStatisticsAsync(userId);
+
+            if (metrics == null)
+            {
+                // Fallback returns 0 if no metrics are found
+                return Ok(new { totalStudents = 0, totalCourses = 0, totalVideos = 0 });
+            }
+
+            // 🚨 5. RETURN AN ANONYMOUS OBJECT WITH CAMELCASE PROPERTIES
+            return Ok(new
+            {
+                totalStudents = metrics.TotalStudents,
+                totalCourses = metrics.TotalCourses,
+                totalVideos = metrics.TotalVideos
+            });
+
+            #endregion
+
+
+        }
     }
 }
