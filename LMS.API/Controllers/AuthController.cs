@@ -1,11 +1,8 @@
 ﻿using Infrastructure.DTO;
-using LMS.Domain;
-using LMS.Domain.Enums;
 using LMS.Infrastructure.DTO;
 using LMS.Infrastructure.Repository.Interfaces;
 using LMS.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,7 +32,7 @@ namespace LMS.API.Controllers
             if (response == null)
                 return Unauthorized(new { Message = "Invalid email or password" });
 
-            return Ok(response);
+            return Ok(new {response.AccessToken});
         }
 
         [AllowAnonymous]
@@ -51,7 +48,11 @@ namespace LMS.API.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "User registration failed" });
             }
-            return Ok(user);
+
+            string pass = registerRequest.Password;
+            string email = registerRequest.Email;
+            var response = await _jwtService.Authenticate(new LoginDto { Email = email, Password = pass });
+            return Ok(new { response.AccessToken });
         }
 
         [AllowAnonymous]
@@ -67,7 +68,10 @@ namespace LMS.API.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new { Message = "User registration failed" });
             }
-            return Ok(user);
+            string pass = registerInstructorDto.Password;
+            string email = registerInstructorDto.Email;
+            var response = await _jwtService.Authenticate(new LoginDto { Email = email, Password = pass });
+            return Ok(new { response.AccessToken });
         }
 
         [AllowAnonymous]

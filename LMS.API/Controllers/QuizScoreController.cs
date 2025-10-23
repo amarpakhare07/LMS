@@ -1,5 +1,6 @@
 ﻿using LMS.Infrastructure.DTO;
 using LMS.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LMS.API.Controllers
@@ -16,9 +17,11 @@ namespace LMS.API.Controllers
         }
 
         [HttpPost("{quizId}/user/{userId}")]
-        public async Task<IActionResult> CreateQuizScore(int quizId, int userId, [FromBody] CreateQuizScoreDto createQuizScoreDto)
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> CreateQuizScore(int quizId, [FromBody] CreateQuizScoreDto createQuizScoreDto)
         {
-            if (createQuizScoreDto == null || createQuizScoreDto.QuizID != quizId || createQuizScoreDto.UserID != userId)
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (createQuizScoreDto == null || createQuizScoreDto.QuizID != quizId || createQuizScoreDto.UserID != int.Parse(userId))
             {
                 return BadRequest();
             }
@@ -28,9 +31,10 @@ namespace LMS.API.Controllers
         }
 
         [HttpGet("course/{courseId}/user/{userId}")]
-        public async Task<IActionResult> GetQuizScoresByCourse(int courseId, int userId)
+        public async Task<IActionResult> GetQuizScoresByCourse(int courseId)
         {
-            var quizScores = await _quizScoreService.GetQuizScoresByCourseAsync(courseId, userId);
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var quizScores = await _quizScoreService.GetQuizScoresByCourseAsync(courseId, int.Parse(userId));
             return Ok(quizScores);
         }
     }

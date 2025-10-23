@@ -1,10 +1,7 @@
-﻿using LMS.Domain;
-using LMS.Domain.Models;
+﻿using LMS.Domain.Models;
 using LMS.Infrastructure.DTO;
-using LMS.Infrastructure.Services;
 using LMS.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
@@ -67,6 +64,18 @@ namespace LMS.API.Controllers
             }
 
             var success = await courseService.UpdateCourseAsync(courseDto);
+            if (success != null)
+            {
+                return NoContent();
+            }
+            return NotFound();
+        }
+
+        [HttpPut("status/{courseId}")]
+        [Authorize(Roles = "Admin,Instructor")]
+        public async Task<IActionResult> UpdateCourseStatus(int courseId, [FromBody] UpdateCourseStatusDto updateCourseStatusDto)
+        {
+            var success = await courseService.UpdateCourseStatusAsync(courseId,updateCourseStatusDto);
             if (success != null)
             {
                 return NoContent();

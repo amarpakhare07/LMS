@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LMS.Domain.Models;
 using LMS.Infrastructure.DTO;
 using LMS.Infrastructure.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace LMS.API.Controllers
 {
@@ -16,14 +18,12 @@ namespace LMS.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles ="Student")]
         public async Task<IActionResult> CreateAnswer([FromBody] CreateAnswerDto createAnswerDto)
         {
-            ////if (!ModelState.IsValid)
-            //{
-            //    return BadRequest(ModelState);
-            //}
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
-            var result = await answerService.CreateAnswerAsync(createAnswerDto);
+            var result = await answerService.CreateAnswerAsync(createAnswerDto, int.Parse(userId));
             return Ok(result);
         }
 

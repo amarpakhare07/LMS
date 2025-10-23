@@ -19,23 +19,23 @@ namespace LMS.Infrastructure.Repository
         {
             _dbContext = context;
         }
-        public async Task<bool> EnrollUserAsync(EnrollRequestDto requestEnrollmentDto)
+        public async Task<bool> EnrollUserAsync(int courseId, int userId)
         {
-            var user = await _dbContext.Users.FindAsync(requestEnrollmentDto.UserId);
-            var course = await _dbContext.Courses.FindAsync(requestEnrollmentDto.CourseId);
+            var user = await _dbContext.Users.FindAsync(userId);
+            var course = await _dbContext.Courses.FindAsync(courseId);
 
             if (user == null || course == null)
                 return false;
 
-            var alreadyEnrolled = await _dbContext.Enrollments.FirstOrDefaultAsync(e => e.UserID == requestEnrollmentDto.UserId && e.CourseID == requestEnrollmentDto.CourseId);
+            var alreadyEnrolled = await _dbContext.Enrollments.FirstOrDefaultAsync(e => e.UserID == userId && e.CourseID == courseId);
 
             if (alreadyEnrolled != null)
                 return false;
 
             var enrollment = new Enrollment
             {
-                UserID = requestEnrollmentDto.UserId,
-                CourseID = requestEnrollmentDto.CourseId
+                UserID = userId,
+                CourseID = courseId
             };
 
             _dbContext.Enrollments.Add(enrollment);
@@ -54,9 +54,9 @@ namespace LMS.Infrastructure.Repository
 
         }
 
-        public async Task<bool> IsUserEnrolledAsync(EnrollRequestDto requestEnrollmentDto)
+        public async Task<bool> IsUserEnrolledAsync(int courseId, int userId)
         {
-            return await _dbContext.Enrollments.AnyAsync(e => e.UserID == requestEnrollmentDto.UserId && e.CourseID == requestEnrollmentDto.CourseId);
+            return await _dbContext.Enrollments.AnyAsync(e => e.UserID == userId && e.CourseID == courseId);
         }
     }
 }

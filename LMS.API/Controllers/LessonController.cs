@@ -1,8 +1,6 @@
 ﻿using LMS.Infrastructure.DTO;
 using LMS.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors.Infrastructure;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LMS.API.Controllers
@@ -20,24 +18,23 @@ namespace LMS.API.Controllers
 
         // Implementation goes here
         [HttpPost]
-        //[Authorize(Roles = "Instructor")]
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> CreateLessonAsync([FromBody] CreateLessonDto createLessonDto)
         {
             var lesson = await lessonService.CreateLessonAsync(createLessonDto);
             return Ok(lesson);
-            //return CreatedAtAction(nameof(GetLessonByIdAsync), new { id = lesson.LessonID }, lesson);
         }
 
         [HttpGet("{id}")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetLessonByIdAsync(int lessonId)
+        public async Task<IActionResult> GetLessonByIdAsync(int id)
         {
-            var lesson = await lessonService.GetLessonByIdAsync(lessonId);
+            var lesson = await lessonService.GetLessonByIdAsync(id);
             if (lesson == null) return NotFound();
             return Ok(lesson);
         }
 
-        [HttpGet]
+        [HttpGet("{courseId}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetLessonsByCourseAsync(int courseId)
         {
@@ -46,14 +43,9 @@ namespace LMS.API.Controllers
         }
 
         [HttpPut("{id}")]
-        //[Authorize(Roles = "Instructor")]
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> UpdateLessonAsync(int id, [FromBody] LessonDto lessonDto)
         {
-            //if (id != lessonDto.LessonID)
-            //{
-            //    return BadRequest("Lesson ID mismatch");
-            //}
-
             var success = await lessonService.UpdateLessonAsync(lessonDto);
             if (success != null)
             {
@@ -63,7 +55,7 @@ namespace LMS.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        //[Authorize(Roles = "Instructor")]
+        [Authorize(Roles = "Instructor")]
         public async Task<IActionResult> DeleteLessonAsync(int id)
         {
             var success = await lessonService.DeleteLessonAsync(id);

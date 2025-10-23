@@ -9,7 +9,7 @@ namespace LMS.Infrastructure.Services.Interfaces
 {
     public interface IAnswerService
     {
-        Task<CreateAnswerDto> CreateAnswerAsync(CreateAnswerDto answerDto);
+        Task<CreateAnswerDto> CreateAnswerAsync(CreateAnswerDto answerDto, int userId);
         
     }
 }

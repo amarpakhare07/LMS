@@ -187,6 +187,7 @@ namespace LMS.API.Controllers
                 Bio = user.Bio,
                 ProfilePicture = user.ProfilePicture,
                 LastLogin = user.LastLogin,
+                Role = (int)user.Role,
                 UpdatedAt = user.UpdatedAt,
                 IsActive = user.IsActive,
                 IsDeleted = user.IsDeleted
@@ -210,6 +211,7 @@ namespace LMS.API.Controllers
                 Email = user.Email,
                 Bio = user.Bio,
                 ProfilePicture = user.ProfilePicture,
+                Role = (int)user.Role,
                 LastLogin = user.LastLogin,
                 UpdatedAt = user.UpdatedAt,
                 IsActive = user.IsActive,

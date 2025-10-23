@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace LMS.Infrastructure.DTO
 {
-    public class EnrollRequestDto
+    public class UpdateCourseStatusDto
     {
-
-       
-        public int CourseId { get; set; }
+        public bool Published { get; set; }
 
     }
 }

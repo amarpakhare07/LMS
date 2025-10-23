@@ -18,6 +18,16 @@ namespace LMS.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Add CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAngularApp",
+                        builder => builder.WithOrigins("http://localhost:4200") // Replace with your client application's origin
+                                            .AllowAnyHeader()
+                                            .AllowAnyMethod());
+            });
+
+
             // Add services to the container.
 
             builder.Services.AddControllers().AddJsonOptions(options => {
@@ -60,7 +70,7 @@ namespace LMS.API
             builder.Services.AddScoped<IQuizScoreService, QuizScoreService>();
 
             builder.Services.AddScoped<IAnswerService, AnswerService>();
-            builder.Services.AddScoped<ILessonService, LessonService>();
+            builder.Services.AddScoped<ILessonService, LessonService>();  
 
             //------------------
 
@@ -144,6 +154,7 @@ namespace LMS.API
             }
 
             app.UseHttpsRedirection();
+            app.UseCors("AllowAngularApp");
 
             app.UseAuthorization();
 

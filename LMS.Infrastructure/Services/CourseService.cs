@@ -69,7 +69,21 @@ namespace LMS.Infrastructure.Services
                 CategoryID = course.CategoryID,
                 Published = course.Published,
                 Rating = course.Rating,
-                ReviewCount = course.ReviewCount
+                ReviewCount = course.ReviewCount,
+                Lessons = course.Lessons
+                                .Where(l => !l.IsDeleted)
+                                .OrderBy(l => l.OrderIndex)
+                                .Select(l => new LessonDto
+                                {
+                                    LessonID = l.LessonID,
+                                    Title = l.Title,
+                                    Content = l.Content,
+                                    VideoURL = l.VideoURL,
+                                    OrderIndex = l.OrderIndex,
+                                    LessonType = l.LessonType,
+                                    EstimatedTime = l.EstimatedTime
+                                }).ToList()
+
             };
         }
 
@@ -119,6 +133,16 @@ namespace LMS.Infrastructure.Services
         public async Task<bool> DeleteCourseAsync(int id)
         {
             return await courseRepository.DeleteCourseAsync(id);
+        }
+
+        public Task<bool> UpdateCourseStatusAsync(int courseId, UpdateCourseStatusDto updateCourseStatusDto)
+        {
+            var course = courseRepository.GetCourseByIdAsync(courseId).Result;
+            if (course == null) return Task.FromResult(false);
+
+            course.Published = updateCourseStatusDto.Published;
+
+            return courseRepository.UpdateCourseStatusAsync(course);
         }
     }
 }
