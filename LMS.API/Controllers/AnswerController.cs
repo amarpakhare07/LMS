@@ -1,8 +1,8 @@
-﻿using LMS.Domain.Models;
-using LMS.Infrastructure.DTO;
+﻿using LMS.Infrastructure.DTO;
 using LMS.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace LMS.API.Controllers
 {
@@ -18,15 +18,32 @@ namespace LMS.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles ="Student")]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> CreateAnswer([FromBody] CreateAnswerDto createAnswerDto)
         {
-            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+                return Unauthorized("User ID not found.");
 
-            var result = await answerService.CreateAnswerAsync(createAnswerDto, int.Parse(userId));
-            return Ok(result);
+            if (createAnswerDto == null || createAnswerDto.QuestionID <= 0 ||
+                createAnswerDto.QuizID <= 0 || createAnswerDto.AttemptNumber <= 0)
+                return BadRequest("Invalid answer data.");
+
+            try
+            {
+                var result = await answerService.CreateAnswerAsync(
+                    createAnswerDto,
+                    userId,
+                    createAnswerDto.QuizID,
+                    createAnswerDto.AttemptNumber
+                );
+
+                return Ok(result);
+            }
+            catch (System.Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
-
-       
     }
 }

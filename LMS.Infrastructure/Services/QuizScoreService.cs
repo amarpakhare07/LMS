@@ -5,28 +5,31 @@ using LMS.Infrastructure.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LMS.Infrastructure.Services
 {
     public class QuizScoreService : IQuizScoreService
-
     {
         private readonly IQuizScoreRepository quizScoreRepository;
         private readonly IAnswerRepository answerRepository;
-        private readonly IQuestionRepository questionRepository;
+        private readonly IQuizRepository quizRepository;
 
-        public QuizScoreService(IQuizScoreRepository quizScoreRepository, IAnswerRepository answerRepository, IQuestionRepository questionRepository)
+        public QuizScoreService(
+            IQuizScoreRepository quizScoreRepository,
+            IAnswerRepository answerRepository,
+            IQuizRepository quizRepository)
         {
             this.quizScoreRepository = quizScoreRepository;
             this.answerRepository = answerRepository;
-            this.questionRepository = questionRepository;
+            this.quizRepository = quizRepository;
         }
+
         public async Task<IEnumerable<QuizScoreDto>> GetQuizScoresByCourseAsync(int courseId, int userId)
         {
             var quizScores = await quizScoreRepository.GetQuizScoresByCourseAsync(courseId, userId);
             var quizScoresDto = new List<QuizScoreDto>();
+
             foreach (var quizScore in quizScores)
             {
                 quizScoresDto.Add(new QuizScoreDto
@@ -35,45 +38,70 @@ namespace LMS.Infrastructure.Services
                     QuizID = quizScore.QuizID,
                     UserID = quizScore.UserID,
                     Score = quizScore.Score,
+                    AttemptNumber = quizScore.AttemptNumber,
                     CreatedAt = quizScore.CreatedAt
                 });
             }
-            return quizScoresDto;  
+
+            return quizScoresDto;
         }
 
         public async Task<CreateQuizScoreDto> CreateQuizScoreAsync(CreateQuizScoreDto createQuizScoreDto)
         {
-            var allAnswers = await answerRepository.GetAnswersByQuizAndUserAsync(createQuizScoreDto.QuizID, createQuizScoreDto.UserID);
-            var latestAttempt = allAnswers.Max(a => a.AttemptNumber);
-            var latestAnswers = allAnswers.Where(a => a.AttemptNumber == latestAttempt).ToList();
-       
-            var questions = await questionRepository.GetQuestionsByQuizIdAsync(createQuizScoreDto.QuizID);
-            int totalScore = 0;
-            foreach (var question in questions)
+            // Step 1: Validate quiz exists
+            var quiz = await quizRepository.GetQuizByIdAsync(createQuizScoreDto.QuizID);
+            if (quiz == null)
+                throw new Exception("Quiz not found.");
+
+            // Step 2: Check if score already exists for this attempt
+            var existingScore = await quizScoreRepository.GetQuizScoreAsync(
+                createQuizScoreDto.UserID,
+                createQuizScoreDto.QuizID,
+                createQuizScoreDto.AttemptNumber
+            );
+
+            if (existingScore != null)
             {
-                var answer = latestAnswers.FirstOrDefault(a => a.QuestionID == question.QuestionID);
-                if (answer != null && answer.IsCorrect == true)
-                {
-                    totalScore += (int)question.Marks;
-                }
+                throw new InvalidOperationException("Score already calculated for this attempt.");
             }
+
+            // Step 3: Get all answers for this specific attempt
+            var allAnswers = await answerRepository.GetAnswersByQuizAndUserAsync(
+                createQuizScoreDto.QuizID,
+                createQuizScoreDto.UserID
+            );
+
+            var currentAttemptAnswers = allAnswers
+                .Where(a => a.AttemptNumber == createQuizScoreDto.AttemptNumber)
+                .ToList();
+
+            if (!currentAttemptAnswers.Any())
+            {
+                throw new Exception("No answers found for this attempt.");
+            }
+
+            // Step 4: Calculate total score (answers already have MarksAwarded from AnswerService)
+            int totalScore = currentAttemptAnswers.Sum(a => a.MarksAwarded ?? 0);
+
+            // Step 5: Create QuizScore entry
             var quizScore = new QuizScore
             {
-                QuizID = createQuizScoreDto.QuizID,
                 UserID = createQuizScoreDto.UserID,
+                QuizID = createQuizScoreDto.QuizID,
                 Score = totalScore,
-                AttemptNumber = latestAttempt,
+                AttemptNumber = createQuizScoreDto.AttemptNumber,
                 CreatedAt = DateTime.UtcNow
             };
-            await quizScoreRepository.CreateQuizScoreAsync(quizScore);
+
+            var createdScore = await quizScoreRepository.CreateQuizScoreAsync(quizScore);
+
             return new CreateQuizScoreDto
             {
-                QuizID = quizScore.QuizID,
-                UserID = quizScore.UserID,
-                Score = quizScore.Score,
-                AttemptNumber = quizScore.AttemptNumber
+                QuizID = createdScore.QuizID,
+                UserID = createdScore.UserID,
+                Score = createdScore.Score,
+                AttemptNumber = createdScore.AttemptNumber
             };
         }
-
     }
 }
