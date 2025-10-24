@@ -32,16 +32,17 @@ namespace LMS.API.Controllers
             if (!result)
                 return BadRequest("Enrollment failed.");
 
-            return Ok("User enrolled successfully.");
+            return Ok(new { Message = "User enrolled successfully." });
         }
 
         [HttpGet("is-enrolled/{courseId}")]
         [Authorize(Roles = "Student,Instructor,Admin")]  // Students, Instructors, and Admins can check enrollment status
-        public async Task<bool> IsUserEnrolledAsync([FromRoute] int courseId)
+        public async Task<IActionResult> IsUserEnrolledAsync([FromRoute] int courseId)
         {
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
-            return await _enrollmentRepository.IsUserEnrolledAsync(courseId, int.Parse(userId));
+            var isEnrolled = await _enrollmentRepository.IsUserEnrolledAsync(courseId, int.Parse(userId));
+            return Ok(new { isEnrolled });
         }
 
 

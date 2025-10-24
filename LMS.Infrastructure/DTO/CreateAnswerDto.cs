@@ -9,11 +9,11 @@ namespace LMS.Infrastructure.DTO
 {
     public class CreateAnswerDto
     {
-        [Required]
         public int QuestionID { get; set; }
-        [Required]
-     
-        public string? Response { get; set; }
-        public bool IsCorrect { get; set; } = false;
+        public string Response { get; set; }
+        public int QuizID { get; set; }
+        public int AttemptNumber { get; set; }
+        public bool? IsCorrect { get; set; }
+        public int? MarksAwarded { get; set; }
     }
 }

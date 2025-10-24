@@ -257,11 +257,45 @@ namespace LMS.Infrastructure.Repository
         #endregion
 
 
+        #region Instructor
 
+        public async Task<InstructorDto> GetInstructorStatisticsAsync(int userId)
+        {
+            // 1. Get the list of all Course IDs once
+            List<int> courseIds = await _dbContext.CourseInstructors
+                .Where(ci => ci.UserID == userId)
+                .Select(ci => ci.CourseID)
+                .ToListAsync();
 
+            if (courseIds.Count == 0)
+            {
+                return new InstructorDto { TotalStudents = 0, TotalCourses = 0, TotalVideos = 0 };
+            }
 
+            // 2. Count Total Courses
+            int totalCourses = courseIds.Count; // Size of the array is the total courses
 
+            // 3. Count Total Students (DISTINCT UserIDs)
+            int totalStudents = await _dbContext.Enrollments
+                .Where(e => courseIds.Contains(e.CourseID))
+                .Select(e => e.UserID)
+                .Distinct()
+                .CountAsync();
 
+            // 4. Count Total Videos (Lessons with VideoURL)
+            int totalVideos = await _dbContext.Lessons
+                .Where(l => courseIds.Contains(l.CourseID))
+                .Where(l => l.VideoURL != null && l.VideoURL != "")
+                .CountAsync();
 
+            return new InstructorDto
+            {
+                TotalStudents = totalStudents,
+                TotalCourses = totalCourses,
+                TotalVideos = totalVideos
+            };
+        }
+
+        #endregion
     }
 }

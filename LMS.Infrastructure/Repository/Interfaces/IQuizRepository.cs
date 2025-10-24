@@ -15,9 +15,6 @@ namespace LMS.Infrastructure.Repository.Interfaces
             Task<Quiz> CreateQuizAsync(Quiz quiz);
             Task<Quiz> UpdateQuizAsync(Quiz quiz);
             Task<Quiz?> DeleteQuizAsync(int quizId);
-
-
-
     }
 
 }
