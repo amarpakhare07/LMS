@@ -323,7 +323,7 @@ namespace LMS.API.Controllers
                 totalCourses = metrics.TotalCourses,
                 totalVideos = metrics.TotalVideos
             });
-
+        }
             #endregion
 
         // Controller for Student Dashboard Summary
