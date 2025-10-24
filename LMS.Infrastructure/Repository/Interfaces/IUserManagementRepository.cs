@@ -12,7 +12,7 @@ namespace LMS.Infrastructure.Repository.Interfaces
     public interface IUserManagementRepository
     {
         Task<User> GetByIdAsync(int UserId);
-        Task<bool> UpdateBioAsync(int UserId, string newBio);
+        Task<bool> UpdateBioAsync(int UserId, string newBio, string name);
         Task<bool> DeleteUserasync(int UserId);
         Task<List<Enrollment>> GetUserEnrolledCourses(int UserId);
 
@@ -32,6 +32,8 @@ namespace LMS.Infrastructure.Repository.Interfaces
         Task<bool> DeleteUserAsync(string email);
         Task GetByIdAsync(object userId);
         Task<bool> UpdateProfilePictureAsync(int userId, string fileName);
+
+        Task<StudentDashboardSummaryDto> GetStudentDashboardSummaryAsync(int userId);
 
     }
 }

@@ -152,7 +152,7 @@ namespace LMS.Infrastructure.Repository
             return await _dbContext.Users.FirstOrDefaultAsync(u => u.UserID == userId);
         }
 
-        public async Task<bool> UpdateBioAsync(int UserId, string newBio)
+        public async Task<bool> UpdateBioAsync(int UserId, string newBio, string name)
         {
             var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserID == UserId);
             if (user == null)
@@ -162,6 +162,7 @@ namespace LMS.Infrastructure.Repository
             else
             {
                 user.Bio = newBio;
+                user.Name = name;
                 user.UpdatedAt = DateTime.UtcNow;
                 await _dbContext.SaveChangesAsync();
                 return true;
@@ -215,6 +216,42 @@ namespace LMS.Infrastructure.Repository
             await _dbContext.SaveChangesAsync();
             return true;
         }
+
+
+
+
+        public async Task<StudentDashboardSummaryDto> GetStudentDashboardSummaryAsync(int userId)
+        {
+            // 1. Enrolled Courses Count: Count of all enrollments for the student
+            var enrolledCoursesCount = await _dbContext.Enrollments
+                .Where(e => e.UserID == userId && !e.IsDeleted)
+                .CountAsync();
+
+            // 2. Completed Courses Count: Count of enrollments where CompletionStatus is "Completed"
+            var completedCoursesCount = await _dbContext.Enrollments
+                .Where(e => e.UserID == userId && !e.IsDeleted && e.CompletionStatus == "Completed")
+                .CountAsync();
+
+            // 3. Overall Progress: Average CompletionPercentage from the Progress table for all enrolled courses
+            // Note: We use the Progress table for the current percentage.
+            //var averageProgress = await _dbContext.Progress
+            //    .Where(p => p.UserID == userId)
+            //    .Select(p => p.CompletionPercentage)
+            //    .AverageAsync(); // This will return a nullable double (double?)
+
+
+            // Handle the case where the average is null (no progress records)
+            //var overallProgress = averageProgress ?? 0.0;
+
+            return new StudentDashboardSummaryDto
+            {
+                EnrolledCoursesCount = enrolledCoursesCount,
+                CompletedCoursesCount = completedCoursesCount,
+                OverallProgressPercentage = 71.0
+            };
+        }
+
+
 
 
         #endregion

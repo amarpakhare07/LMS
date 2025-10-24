@@ -6,6 +6,7 @@ using LMS.Infrastructure.Services;
 using LMS.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -160,6 +161,20 @@ namespace LMS.API
 
 
             app.MapControllers();
+
+            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                // Points to the physical folder where FileUploadService saves images
+                FileProvider = new PhysicalFileProvider(uploadPath),
+
+                // This makes the files accessible via the URL path: /images
+                RequestPath = "/images"
+            });
+
+
+
 
             app.Run();
         }

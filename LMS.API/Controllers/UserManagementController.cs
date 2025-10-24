@@ -86,9 +86,10 @@ namespace LMS.API.Controllers
                     return NotFound(new { Message = "User not found" });
                 }
                 user.Bio = bio.Bio;
+                user.Name = bio.Name;
                 user.UpdatedAt = DateTime.UtcNow;
 
-                await _userManagementRepository.UpdateBioAsync(user.UserID, user.Bio);
+                await _userManagementRepository.UpdateBioAsync(user.UserID, user.Bio,user.Name);
                 //return Ok(new { Message = "Bio updated successfully" });
                 return Ok(new { Message = "Bio updated", UpdatedAt = user.UpdatedAt });
 
@@ -273,6 +274,29 @@ namespace LMS.API.Controllers
         }
 
         #endregion
+
+        // Controller for Student Dashboard Summary
+
+        [HttpGet("me/studentDashboardSummary")]
+        [Authorize(Roles ="Student")]
+
+        public async Task<IActionResult> GetStudentDashboardSummary()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!int.TryParse(userIdClaim, out int userId))
+                return Unauthorized();
+
+            var summary = await _userManagementRepository.GetStudentDashboardSummaryAsync(userId);
+
+            // 3. Return the DTO
+            if (summary == null)
+            {
+                // Should not happen with the current repository logic, but good practice.
+                return NotFound("Student data could not be retrieved.");
+            }
+
+            return Ok(summary);
+        }
 
     }
 }
