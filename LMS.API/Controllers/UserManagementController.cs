@@ -324,7 +324,7 @@ namespace LMS.API.Controllers
             var courses = await _userManagementRepository.GetInstructorCoursesAsync(userId);
 
             // 3. Return the data to the frontend
-            return Ok(courses);
+            return Ok(courses);}
             #endregion
 
         // Controller for Student Dashboard Summary
@@ -352,7 +352,7 @@ namespace LMS.API.Controllers
 
     }
 
-        #endregion
+     
 
 
     
