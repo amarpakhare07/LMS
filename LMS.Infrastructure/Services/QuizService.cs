@@ -15,12 +15,14 @@ namespace LMS.Infrastructure.Services
         private readonly IQuizRepository quizRepository;
         private readonly IAnswerRepository answerRepository;
         private readonly IQuizScoreRepository quizScoreRepository;  
+        private readonly IEnrollmentRepository enrollmentRepository;
 
-        public QuizService(IQuizRepository quizRepository, IAnswerRepository answerRepository, IQuizScoreRepository quizScoreRepository)
+        public QuizService(IQuizRepository quizRepository, IAnswerRepository answerRepository, IQuizScoreRepository quizScoreRepository, IEnrollmentRepository enrollmentRepository)
         {
             this.quizRepository = quizRepository;
             this.answerRepository = answerRepository;
             this.quizScoreRepository = quizScoreRepository;
+            this.enrollmentRepository = enrollmentRepository;
         }
 
         public async Task<IEnumerable<QuizDto>> GetQuizzesByCourseAsync(int courseId)
@@ -125,44 +127,63 @@ namespace LMS.Infrastructure.Services
 
         public async Task<IEnumerable<QuizSummaryDto>> GetQuizSummariesByUserAsync(int userId)
         {
-            // NOTE: A robust solution would filter quizzes by the user's enrolled courses.
-            // This implementation fetches all active quizzes and then checks scores for the user.
-            var allQuizzes = await quizRepository.GetAllActiveQuizzesWithCourseAsync();
+            // 1. Get the list of Course objects the user is enrolled in.
+            // This replaces the old 'GetEnrolledCourseIdsForUserAsync' call.
+            var enrolledCourses = await enrollmentRepository.GetEnrolledCoursesAsync(userId);
+            // NOTE: Assuming courseRepository contains the GetEnrolledCoursesAsync method based on your example.
 
+            // If the user isn't enrolled in any courses, return an empty list immediately.
+            if (enrolledCourses == null || !enrolledCourses.Any())
+            {
+                return new List<QuizSummaryDto>();
+            }
+
+            var enrolledQuizzes = new List<QuizDto>();
             var quizSummaries = new List<QuizSummaryDto>();
             int srNo = 1;
 
-            foreach (var quiz in allQuizzes)
+            // 2. Iterate through enrolled courses and fetch quizzes for each one.
+            foreach (var course in enrolledCourses)
             {
-                // Get user's score summary (highest score and max attempt)
-                var scoreSummary = await quizScoreRepository.GetQuizScoreSummaryForUserAsync(quiz.QuizID, userId);
+                // Use the provided GetQuizzesByCourseAsync to fetch quizzes for this course.
+                // The DTOs returned here are the quizzes themselves (without scores).
+                var quizzesInCourse = await quizRepository.GetQuizzesByCourseAsync(course.CourseID);
+                // NOTE: Assuming GetQuizzesByCourseAsync is a service method available via 'quizService' 
+                // to match the provided function signature and repository usage.
 
-                int maxAttempt = scoreSummary.MaxAttemptNumber;
-
-                // Treat null AttemptsAllowed as functionally unlimited (Int32.MaxValue)
-                int attemptsAllowed = quiz.AttemptsAllowed ?? int.MaxValue;
-
-                int attemptsLeft = attemptsAllowed - maxAttempt;
-
-                // Ensure attemptsLeft is not negative
-                if (attemptsLeft < 0) attemptsLeft = 0;
-
-                // Try to get Course Title from the navigation property (assuming it exists and has a Title property)
-                string courseTitle = (quiz.Course != null && !string.IsNullOrEmpty(quiz.Course.Title))
-                                    ? quiz.Course.Title : "Course Title Not Found";
-
-                quizSummaries.Add(new QuizSummaryDto
+                // 3. Process each quiz to calculate the summary, including the user's score.
+                foreach (var quiz in quizzesInCourse)
                 {
-                    SrNo = srNo++,
-                    QuizID = quiz.QuizID,
-                    QuizTitle = quiz.Title,
-                    TotalMarks = quiz.TotalMarks,
-                    HighestScore = scoreSummary.HighestScore,
-                    AttemptsAllowed = quiz.AttemptsAllowed, // Send the original value (null or int)
-                    AttemptsLeft = attemptsLeft,
-                    CourseID = quiz.CourseID,
-                    CourseTitle = courseTitle
-                });
+                    // Get user's score summary (highest score and max attempt)
+                    // This part of the logic remains sound.
+                    var scoreSummary = await quizScoreRepository.GetQuizScoreSummaryForUserAsync(quiz.QuizID, userId);
+
+                    int maxAttempt = scoreSummary.MaxAttemptNumber;
+
+                    // Treat null AttemptsAllowed as functionally unlimited (Int32.MaxValue)
+                    int attemptsAllowed = quiz.AttemptsAllowed ?? 0;
+
+                    int attemptsLeft = attemptsAllowed - maxAttempt;
+
+                    // Ensure attemptsLeft is not negative
+                    if (attemptsLeft < 0) attemptsLeft = 0;
+
+                    // We can now reliably get the Course Title from the 'course' object in the outer loop.
+                    string courseTitle = course.Title ?? "Course Title Not Found";
+
+                    quizSummaries.Add(new QuizSummaryDto
+                    {
+                        SrNo = srNo++,
+                        QuizID = quiz.QuizID,
+                        QuizTitle = quiz.Title,
+                        TotalMarks = quiz.TotalMarks,
+                        HighestScore = scoreSummary.HighestScore,
+                        AttemptsAllowed = quiz.AttemptsAllowed,
+                        AttemptsLeft = attemptsLeft,
+                        CourseID = quiz.CourseID,
+                        CourseTitle = courseTitle
+                    });
+                }
             }
 
             return quizSummaries;
