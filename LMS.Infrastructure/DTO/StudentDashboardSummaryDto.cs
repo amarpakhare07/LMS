@@ -10,6 +10,11 @@ namespace LMS.Infrastructure.DTO
     {
         public int EnrolledCoursesCount { get; set; }
         public int CompletedCoursesCount { get; set; }
-        public double OverallProgressPercentage { get; set; } // Average progress of all enrolled courses
+        public int UniqueQuizzesAttempted { get; set; } // Average progress of all enrolled courses
+
+        public List<CourseAverageScoreDto> CourseAverageScores { get; set; } = new List<CourseAverageScoreDto>();
+
+        public List<TopInstructorDto> TopInstructors { get; set; } = new List<TopInstructorDto>();
+
     }
 }

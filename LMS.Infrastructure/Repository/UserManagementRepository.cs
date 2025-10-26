@@ -4,12 +4,14 @@ using LMS.Domain.Models;
 using LMS.Infrastructure.DTO;
 using LMS.Infrastructure.Repository.Interfaces;
 using LMS.Infrastructure.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 
 namespace LMS.Infrastructure.Repository
@@ -232,22 +234,83 @@ namespace LMS.Infrastructure.Repository
                 .Where(e => e.UserID == userId && !e.IsDeleted && e.CompletionStatus == "Completed")
                 .CountAsync();
 
-            // 3. Overall Progress: Average CompletionPercentage from the Progress table for all enrolled courses
-            // Note: We use the Progress table for the current percentage.
-            //var averageProgress = await _dbContext.Progress
-            //    .Where(p => p.UserID == userId)
-            //    .Select(p => p.CompletionPercentage)
-            //    .AverageAsync(); // This will return a nullable double (double?)
+            var uniqueQuizzesAttempted = await _dbContext.QuizScores
+                .Where(score => score.UserID == userId) 
+                .Select(score => score.QuizID)
+                .Distinct()
+                .CountAsync();
 
 
-            // Handle the case where the average is null (no progress records)
-            //var overallProgress = averageProgress ?? 0.0;
+            var courseAverageScores = await _dbContext.QuizScores
+    .Where(qs => qs.UserID == userId)
+    // 1. Group by QuizID and its CourseID
+    .GroupBy(qs => new { qs.QuizID, qs.Quiz.CourseID })
+    .Select(g => new
+    {
+        g.Key.CourseID,
+        HighestScore = g.Max(qs => qs.Score) // Highest score per quiz
+    })
+    // 2. Group the highest scores again, this time only by CourseID
+    .GroupBy(a => a.CourseID)
+    .Select(g => new CourseAverageScoreDto // Mapped to the user-specified DTO
+    {
+        // 3. Fetch the Course Title (Name) using the CourseID
+        CourseName = _dbContext.Courses
+            .Where(c => c.CourseID == g.Key)
+            .Select(c => c.Title)
+            .FirstOrDefault() ?? "Unknown Course",
 
+        // 4. Calculate the average of the highest scores for this course
+        AverageScore = (int?)Math.Round(g.Average(a => a.HighestScore))
+    })
+    .ToListAsync();
+
+
+
+
+            int count = 5;
+            var topInstructors = await _dbContext.Users
+                .Where(u => u.Role == UserRole.Instructor) // 1. Filter for instructors
+                .Select(u => new TopInstructorDto
+                {
+                    InstructorID = u.UserID,
+                    Name = u.Name,
+                    ProfilePicture = u.ProfilePicture,
+
+                    // 2. Calculate Overall Rating: Average of all *published* course ratings
+                    OverallRating = u.CourseInstructors
+                        .Select(ci => ci.Course)
+                        .Where(c => c.Rating.HasValue)
+                        .Average(c => c.Rating),
+
+                    // 3. Calculate Total Students: Count of distinct UserIDs in Enrollments
+                    TotalStudents = u.CourseInstructors
+                        .SelectMany(ci => ci.Course.Enrollments)
+                        .Select(e => e.UserID)
+                        .Distinct()
+                        .Count()
+                })
+                // 4. Removed the .Where(dto => dto.TotalStudents > 0) filter as requested.
+                //    All instructors will now be included.
+                // 5. Order by rating (descending), treating null ratings as 0 for sorting,
+                //    then by Total Students as a tie-breaker.
+                .OrderByDescending(dto => dto.OverallRating.HasValue ? dto.OverallRating : 0)
+                .OrderByDescending(dto => dto.TotalStudents)
+                // 6. Take the top N
+                .Take(count)
+                .ToListAsync();
+
+
+
+
+            // 6. Return the final DTO
             return new StudentDashboardSummaryDto
             {
                 EnrolledCoursesCount = enrolledCoursesCount,
                 CompletedCoursesCount = completedCoursesCount,
-                OverallProgressPercentage = 71.0
+                UniqueQuizzesAttempted = uniqueQuizzesAttempted,
+                CourseAverageScores = courseAverageScores,
+                TopInstructors = topInstructors
             };
         }
 

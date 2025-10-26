@@ -86,7 +86,9 @@ namespace LMS.API.Controllers
                     return NotFound(new { Message = "User not found" });
                 }
                 user.Bio = bio.Bio;
+                user.Name = bio.Name;
                 user.UpdatedAt = DateTime.UtcNow;
+
 
                 await _userManagementRepository.UpdateBioAsync(user.UserID, user.Bio,user.Name);
                 //return Ok(new { Message = "Bio updated successfully" });
@@ -328,7 +330,7 @@ namespace LMS.API.Controllers
 
         // Controller for Student Dashboard Summary
 
-        [HttpGet("me/studentDashboardSummary")]
+        [HttpGet("student/dashboardSummary")]
         [Authorize(Roles ="Student")]
 
         public async Task<IActionResult> GetStudentDashboardSummary()

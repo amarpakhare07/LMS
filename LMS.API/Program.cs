@@ -162,18 +162,34 @@ namespace LMS.API
 
             app.MapControllers();
 
-            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+            //var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
 
+            //app.UseStaticFiles(new StaticFileOptions
+            //{
+            //    // Points to the physical folder where FileUploadService saves images
+            //    FileProvider = new PhysicalFileProvider(uploadPath),
+
+            //    // This makes the files accessible via the URL path: /images
+            //    RequestPath = "/images"
+            //});
+
+            var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+
+            // 2. Configure a StaticFiles middleware to serve files from the Uploads folder
+            //    The RequestPath is the URL prefix the client will use (e.g., "https://localhost:7049/Uploads/nigt.png")
             app.UseStaticFiles(new StaticFileOptions
             {
-                // Points to the physical folder where FileUploadService saves images
-                FileProvider = new PhysicalFileProvider(uploadPath),
-
-                // This makes the files accessible via the URL path: /images
-                RequestPath = "/images"
+                FileProvider = new PhysicalFileProvider(uploadsPath),
+                RequestPath = "/Uploads"
             });
 
-
+            // Optional: Enable directory browsing for the Uploads folder (useful for verification)
+            // You may want to remove this in a production environment for security.
+            app.UseDirectoryBrowser(new DirectoryBrowserOptions
+            {
+                FileProvider = new PhysicalFileProvider(uploadsPath),
+                RequestPath = "/Uploads"
+            });
 
 
             app.Run();
