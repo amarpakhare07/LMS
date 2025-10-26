@@ -103,5 +103,17 @@ namespace LMS.Infrastructure.Services
                 AttemptNumber = createdScore.AttemptNumber
             };
         }
+
+
+
+        //public async Task<IEnumerable<CourseAverageScoreDto>> GetAverageCourseScoresByUserAsync(int userId)
+        //{
+        //    // This relies on the new repository method to efficiently calculate the average
+        //    // of the *highest score* per quiz for all quizzes within each course.
+        //    var averageScores = await quizScoreRepository.GetAverageCourseScoresByUserAsync(userId);
+        //    return averageScores;
+        //}
+
+
     }
 }

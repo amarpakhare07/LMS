@@ -1,11 +1,12 @@
-﻿using LMS.Infrastructure.DTO;
+﻿using LMS.Domain.Models;
+using LMS.Infrastructure.DTO;
+using LMS.Infrastructure.Repository;
 using LMS.Infrastructure.Repository.Interfaces;
-using LMS.Domain.Models;
+using LMS.Infrastructure.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using LMS.Infrastructure.Services.Interfaces;
 
 namespace LMS.Infrastructure.Services
 {
@@ -13,11 +14,13 @@ namespace LMS.Infrastructure.Services
     {
         private readonly IQuizRepository quizRepository;
         private readonly IAnswerRepository answerRepository;
+        private readonly IQuizScoreRepository quizScoreRepository;  
 
-        public QuizService(IQuizRepository quizRepository, IAnswerRepository answerRepository)
+        public QuizService(IQuizRepository quizRepository, IAnswerRepository answerRepository, IQuizScoreRepository quizScoreRepository)
         {
             this.quizRepository = quizRepository;
             this.answerRepository = answerRepository;
+            this.quizScoreRepository = quizScoreRepository;
         }
 
         public async Task<IEnumerable<QuizDto>> GetQuizzesByCourseAsync(int courseId)
@@ -118,5 +121,52 @@ namespace LMS.Infrastructure.Services
                     : null
             };
         }
+
+
+        public async Task<IEnumerable<QuizSummaryDto>> GetQuizSummariesByUserAsync(int userId)
+        {
+            // NOTE: A robust solution would filter quizzes by the user's enrolled courses.
+            // This implementation fetches all active quizzes and then checks scores for the user.
+            var allQuizzes = await quizRepository.GetAllActiveQuizzesWithCourseAsync();
+
+            var quizSummaries = new List<QuizSummaryDto>();
+            int srNo = 1;
+
+            foreach (var quiz in allQuizzes)
+            {
+                // Get user's score summary (highest score and max attempt)
+                var scoreSummary = await quizScoreRepository.GetQuizScoreSummaryForUserAsync(quiz.QuizID, userId);
+
+                int maxAttempt = scoreSummary.MaxAttemptNumber;
+
+                // Treat null AttemptsAllowed as functionally unlimited (Int32.MaxValue)
+                int attemptsAllowed = quiz.AttemptsAllowed ?? int.MaxValue;
+
+                int attemptsLeft = attemptsAllowed - maxAttempt;
+
+                // Ensure attemptsLeft is not negative
+                if (attemptsLeft < 0) attemptsLeft = 0;
+
+                // Try to get Course Title from the navigation property (assuming it exists and has a Title property)
+                string courseTitle = (quiz.Course != null && !string.IsNullOrEmpty(quiz.Course.Title))
+                                    ? quiz.Course.Title : "Course Title Not Found";
+
+                quizSummaries.Add(new QuizSummaryDto
+                {
+                    SrNo = srNo++,
+                    QuizID = quiz.QuizID,
+                    QuizTitle = quiz.Title,
+                    TotalMarks = quiz.TotalMarks,
+                    HighestScore = scoreSummary.HighestScore,
+                    AttemptsAllowed = quiz.AttemptsAllowed, // Send the original value (null or int)
+                    AttemptsLeft = attemptsLeft,
+                    CourseID = quiz.CourseID,
+                    CourseTitle = courseTitle
+                });
+            }
+
+            return quizSummaries;
+        }
+
     }
 }
