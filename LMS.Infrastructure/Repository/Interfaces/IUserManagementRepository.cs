@@ -38,7 +38,7 @@ namespace LMS.Infrastructure.Repository.Interfaces
         
 
         Task<InstructorDto> GetInstructorStatisticsAsync(int instructorId);
-        Task<StudentDashboardSummaryDto> GetStudentDashboardSummaryAsync(int userId);
-
+        
+        Task<IEnumerable<InstructorCoursesDto>> GetInstructorCoursesAsync(int instructorId);
     }
 }
