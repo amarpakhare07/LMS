@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static LMS.Infrastructure.DTO.InstructorCoursesDto;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 
@@ -359,6 +360,65 @@ namespace LMS.Infrastructure.Repository
             };
         }
 
-        #endregion
+        public async Task<IEnumerable<InstructorCoursesDto>> GetInstructorCoursesAsync(int instructorId)
+        {
+            // 1. Get the Course IDs associated with the specific instructor
+            var instructorCourseIds = _dbContext.CourseInstructors
+                .Where(ci => ci.UserID == instructorId)
+                .Select(ci => ci.CourseID);
+
+            // 2. Query Courses, filter by ID and IsDeleted, and project the aggregated data
+            var result = await _dbContext.Courses
+                .Include(c=> c.Category)
+                .Where(c => instructorCourseIds.Contains(c.CourseID) && !c.IsDeleted)
+                .Select(c => new
+                {
+                    Course = c,
+                    // Aggregation: Count of non-deleted lessons
+                    TotalLessons = c.Lessons.Count(l => !l.IsDeleted),
+                    // Projection of relevant lesson details for in-memory time calculation
+                    TotalEstimatedMinutes = c.Lessons.Where(l => !l.IsDeleted)
+                                       .Sum(l => l.EstimatedTime ?? 0),
+
+                    CategoryName = c.Category != null ? c.Category.Name : "Uncategorized"
+                })
+                .ToListAsync();
+
+            // 3. Map to DTO and perform the time-string aggregation in memory (C#)
+            var coursesList = result.Select(r =>
+            {
+                // Calculate total minutes from string formats (e.g., "2 Hr")
+                //var totalMinutes = r.Lessons.Sum(timeStr => ParseTimeStringToMinutes(timeStr));
+                var totalDuration = TimeSpan.FromMinutes(r.TotalEstimatedMinutes);
+
+                return new InstructorCoursesDto
+                {
+                    CourseID = r.Course.CourseID,
+                    Title = r.Course.Title,
+                    Published = r.Course.Published,
+                    TotalLessons = r.TotalLessons,
+                    TotalEstimatedTimeInMinutes = r.TotalEstimatedMinutes,
+                    // Format the TimeSpan into the required display string (e.g., "248 Hr")
+                    TotalDurationDisplay = FormatDuration(totalDuration),
+                    CourseCategory = r.CategoryName
+                };
+            }).ToList();
+
+            return coursesList;
+        }
+        // Formats the total duration into the required display string.
+        private string FormatDuration(TimeSpan duration)
+        {
+            // Simple logic: if total hours is 1 or more, show hours, otherwise show minutes
+            if (duration.TotalHours >= 1)
+            {
+                // Show hours rounded to the nearest whole number
+                return $"{Math.Round(duration.TotalHours)} Hr";
+            }
+            return $"{duration.TotalMinutes} Min";
+        }
     }
+
+    #endregion
+
 }

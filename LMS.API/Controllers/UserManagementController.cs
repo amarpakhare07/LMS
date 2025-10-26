@@ -278,27 +278,6 @@ namespace LMS.API.Controllers
 
         #region Instructor Functionalities
 
-        //[HttpGet("instructor/courses/count")]
-        //[Authorize(Roles = "Instructor")]
-        //public async Task<IActionResult> GetTotalCoursesByInstructor()
-        //{
-        //    var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //    if (!int.TryParse(userIdClaim, out int instructorId))
-        //        return Unauthorized();
-        //    var totalCourses = await _userManagementRepository.GetTotalCoursesByInstructorAsync(instructorId);
-        //    return Ok(new { TotalCourses = totalCourses });
-        //}
-
-        //[HttpGet("instructor/students/count")]
-        //[Authorize(Roles = "Instructor")]
-        //public async Task<IActionResult> GetTotalStudentsByInstructor()
-        //{
-        //    var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //    if (!int.TryParse(userIdClaim, out int instructorId))
-        //        return Unauthorized();
-        //    var totalStudents = await _userManagementRepository.GetTotalStudentsByInstructorAsync(instructorId);
-        //    return Ok(new { TotalStudents = totalStudents });
-        //}
 
         [HttpGet("instructor/analytics")]
         [Authorize(Roles = "Instructor")]
@@ -326,6 +305,26 @@ namespace LMS.API.Controllers
                 totalVideos = metrics.TotalVideos
             });
         }
+
+        [HttpGet("instructor/courses")]
+        //[ProducesResponseType(typeof(IEnumerable<InstructorCoursesDto>), 200)]
+        [Authorize(Roles = "Instructor")]
+        public async Task<IActionResult> GetMyCourses()
+        {
+            // 1. Get the current instructor's ID from the authentication token/claims
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+           // var userIdClaim = User.FindFirst("InstructorId")?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+            {
+                // If authentication failed or ID is missing, return forbidden
+                return Forbid("Instructor ID required.");
+            }
+
+            // 2. Fetch the aggregated courses data
+            var courses = await _userManagementRepository.GetInstructorCoursesAsync(userId);
+
+            // 3. Return the data to the frontend
+            return Ok(courses);
             #endregion
 
         // Controller for Student Dashboard Summary
@@ -352,4 +351,10 @@ namespace LMS.API.Controllers
         }
 
     }
+
+        #endregion
+
+
+    
+    
 }
