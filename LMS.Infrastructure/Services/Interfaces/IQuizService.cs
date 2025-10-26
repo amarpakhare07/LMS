@@ -11,5 +11,9 @@ namespace LMS.Infrastructure.Services.Interfaces
         Task<QuizDto> CreateQuizAsync(CreateQuizDto quizDto);
         Task<bool> DeleteQuizAsync(int quizId);
         Task<StartQuizResponseDto> StartQuizAsync(int quizId, int userId);
+
+        Task<IEnumerable<QuizSummaryDto>> GetQuizSummariesByUserAsync(int userId);
+
+
     }
 }
