@@ -35,7 +35,8 @@ namespace LMS.Infrastructure.Repository.Interfaces
 
         // Instructor functionalities
 
-        
+
+        Task<StudentDashboardSummaryDto> GetStudentDashboardSummaryAsync(int userId);
 
         Task<InstructorDto> GetInstructorStatisticsAsync(int instructorId);
         
