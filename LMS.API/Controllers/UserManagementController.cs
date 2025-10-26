@@ -90,7 +90,7 @@ namespace LMS.API.Controllers
                 user.UpdatedAt = DateTime.UtcNow;
 
 
-                await _userManagementRepository.UpdateBioAsync(user.UserID, user.Bio,user.Name);
+                await _userManagementRepository.UpdateBioAsync(user.UserID, user.Bio, user.Name);
                 //return Ok(new { Message = "Bio updated successfully" });
                 return Ok(new { Message = "Bio updated", UpdatedAt = user.UpdatedAt });
 
@@ -313,7 +313,7 @@ namespace LMS.API.Controllers
         {
             // 1. Get the current instructor's ID from the authentication token/claims
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-           // var userIdClaim = User.FindFirst("InstructorId")?.Value;
+            // var userIdClaim = User.FindFirst("InstructorId")?.Value;
             if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
             {
                 // If authentication failed or ID is missing, return forbidden
@@ -325,13 +325,13 @@ namespace LMS.API.Controllers
 
             // 3. Return the data to the frontend
             return Ok(courses);
-            #endregion
+        }
+        #endregion
 
-        // Controller for Student Dashboard Summary
+            // Controller for Student Dashboard Summary
 
         [HttpGet("student/dashboardSummary")]
-        [Authorize(Roles ="Student")]
-
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> GetStudentDashboardSummary()
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -346,15 +346,7 @@ namespace LMS.API.Controllers
                 // Should not happen with the current repository logic, but good practice.
                 return NotFound("Student data could not be retrieved.");
             }
-
             return Ok(summary);
         }
-
     }
-
-        #endregion
-
-
-    
-    
 }
