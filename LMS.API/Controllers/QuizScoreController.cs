@@ -60,5 +60,9 @@ namespace LMS.API.Controllers
             var quizScores = await _quizScoreService.GetQuizScoresByCourseAsync(courseId, userId);
             return Ok(quizScores);
         }
+
+
+        
+
     }
 }

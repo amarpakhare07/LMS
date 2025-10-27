@@ -8,5 +8,8 @@ namespace LMS.Infrastructure.Services.Interfaces
     {
         Task<IEnumerable<QuizScoreDto>> GetQuizScoresByCourseAsync(int courseId, int userId);
         Task<CreateQuizScoreDto> CreateQuizScoreAsync(CreateQuizScoreDto createQuizScoreDto);
+
+        //Task<IEnumerable<CourseAverageScoreDto>> GetAverageCourseScoresByUserAsync(int userId);
+
     }
 }
