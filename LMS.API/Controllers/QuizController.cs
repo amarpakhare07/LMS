@@ -76,5 +76,26 @@ namespace LMS.API.Controllers
             }
             return NotFound();
         }
+
+        [HttpGet("summary")]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> GetQuizSummariesForCurrentUserAsync()
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+                return Unauthorized("User ID not found in token.");
+
+            try
+            {
+                var summaries = await quizService.GetQuizSummariesByUserAsync(userId);
+                return Ok(summaries);
+            }
+            catch (System.Exception ex)
+            {
+                // Log exception (best practice)
+                return StatusCode(500, "An error occurred while fetching quiz summaries: " + ex.Message);
+            }
+
+        }
     }
 }

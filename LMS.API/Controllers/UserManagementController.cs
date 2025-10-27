@@ -86,9 +86,11 @@ namespace LMS.API.Controllers
                     return NotFound(new { Message = "User not found" });
                 }
                 user.Bio = bio.Bio;
+                user.Name = bio.Name;
                 user.UpdatedAt = DateTime.UtcNow;
 
-                await _userManagementRepository.UpdateBioAsync(user.UserID, user.Bio);
+
+                await _userManagementRepository.UpdateBioAsync(user.UserID, user.Bio, user.Name);
                 //return Ok(new { Message = "Bio updated successfully" });
                 return Ok(new { Message = "Bio updated", UpdatedAt = user.UpdatedAt });
 
@@ -116,7 +118,7 @@ namespace LMS.API.Controllers
         // Showing courses enrolled by user
 
         [HttpGet("me/courses")]
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetUserEnrolledCourse()
         {
             var userIdClaims = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -146,7 +148,7 @@ namespace LMS.API.Controllers
 
         // Upload profile picture
         [HttpPost("me/profilePicture")]
-        [Authorize(Roles ="Student")]
+        [Authorize(Roles = "Student")]
         public async Task<IActionResult> UploadProfileImage(IFormFile file)
         {
             try
@@ -157,11 +159,11 @@ namespace LMS.API.Controllers
                     return Unauthorized();
                 var user = await _userManagementRepository.GetByIdAsync(userId);
                 await _userManagementRepository.UpdateProfilePictureAsync(user.UserID, fileName);
-                   
+
 
                 return Ok(new { FileName = fileName, Message = "Profile image uploaded successfully." + fileName });
 
-                
+
 
             }
             catch (Exception ex)
@@ -274,5 +276,77 @@ namespace LMS.API.Controllers
 
         #endregion
 
+        #region Instructor Functionalities
+
+
+        [HttpGet("instructor/analytics")]
+        [Authorize(Roles = "Instructor")]
+        public async Task<IActionResult> GetInstructorAnalytics()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim == null || !int.TryParse(userIdClaim, out int userId))
+                return Unauthorized();
+
+            // 🚨 4. CALL THE REPOSITORY TO GET ALL METRICS
+            // The repository performs the logic for Total Students, Courses, and Videos.
+            var metrics = await _userManagementRepository.GetInstructorStatisticsAsync(userId);
+
+            if (metrics == null)
+            {
+                // Fallback returns 0 if no metrics are found
+                return Ok(new { totalStudents = 0, totalCourses = 0, totalVideos = 0 });
+            }
+
+            // 🚨 5. RETURN AN ANONYMOUS OBJECT WITH CAMELCASE PROPERTIES
+            return Ok(new
+            {
+                totalStudents = metrics.TotalStudents,
+                totalCourses = metrics.TotalCourses,
+                totalVideos = metrics.TotalVideos
+            });
+        }
+
+        [HttpGet("instructor/courses")]
+        //[ProducesResponseType(typeof(IEnumerable<InstructorCoursesDto>), 200)]
+        [Authorize(Roles = "Instructor")]
+        public async Task<IActionResult> GetMyCourses()
+        {
+            // 1. Get the current instructor's ID from the authentication token/claims
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            // var userIdClaim = User.FindFirst("InstructorId")?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+            {
+                // If authentication failed or ID is missing, return forbidden
+                return Forbid("Instructor ID required.");
+            }
+
+            // 2. Fetch the aggregated courses data
+            var courses = await _userManagementRepository.GetInstructorCoursesAsync(userId);
+
+            // 3. Return the data to the frontend
+            return Ok(courses);
+        }
+        #endregion
+
+            // Controller for Student Dashboard Summary
+
+        [HttpGet("student/dashboardSummary")]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> GetStudentDashboardSummary()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!int.TryParse(userIdClaim, out int userId))
+                return Unauthorized();
+
+            var summary = await _userManagementRepository.GetStudentDashboardSummaryAsync(userId);
+
+            // 3. Return the DTO
+            if (summary == null)
+            {
+                // Should not happen with the current repository logic, but good practice.
+                return NotFound("Student data could not be retrieved.");
+            }
+            return Ok(summary);
+        }
     }
 }

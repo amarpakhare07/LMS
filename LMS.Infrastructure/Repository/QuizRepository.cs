@@ -64,5 +64,19 @@ namespace LMS.Infrastructure.Repository
             await dbContext.SaveChangesAsync();
             return quiz;
         }
+
+
+        // ... inside QuizRepository class
+        // ... existing methods
+
+        public async Task<IEnumerable<Quiz>> GetAllActiveQuizzesWithCourseAsync()
+        {
+            // Include Course navigation property to get CourseTitle
+            var quizzes = await dbContext.Quizzes
+                .Where(q => !q.IsDeleted)
+                .Include(q => q.Course)
+                .ToListAsync();
+            return quizzes;
+        }
     }
 }

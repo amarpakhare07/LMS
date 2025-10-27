@@ -1,5 +1,6 @@
 ﻿using LMS.Domain;
 using LMS.Domain.Models;
+using LMS.Infrastructure.DTO;
 using LMS.Infrastructure.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -40,5 +41,30 @@ namespace LMS.Infrastructure.Repository
                                        && q.QuizID == quizId
                                        && q.AttemptNumber == attemptNumber);
         }
+
+
+
+        public async Task<QuizScoreSummary> GetQuizScoreSummaryForUserAsync(int quizId, int userId)
+        {
+            var scores = await _dbContext.QuizScores
+                .Where(q => q.UserID == userId && q.QuizID == quizId)
+                .Select(q => new { q.Score, q.AttemptNumber })
+                .ToListAsync();
+
+            if (!scores.Any())
+            {
+                return new QuizScoreSummary { HighestScore = null, MaxAttemptNumber = 0 };
+            }
+
+            return new QuizScoreSummary
+            {
+                HighestScore = scores.Max(s => s.Score),
+                MaxAttemptNumber = scores.Max(s => s.AttemptNumber)
+            };
+        }
+
+
+      
+
     }
 }
