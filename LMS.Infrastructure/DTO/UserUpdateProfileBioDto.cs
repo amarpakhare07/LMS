@@ -9,6 +9,8 @@ namespace LMS.Infrastructure.DTO
 {
     public class UserUpdateProfileBioDto
     {
+        public string Name { get; set; }
+
         [MaxLength(1000)]
         public string Bio { get; set; } 
     }
