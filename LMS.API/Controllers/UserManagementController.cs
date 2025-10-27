@@ -148,7 +148,7 @@ namespace LMS.API.Controllers
 
         // Upload profile picture
         [HttpPost("me/profilePicture")]
-        [Authorize(Roles = "Student")]
+        [Authorize(Roles = "Student,Instructor,Admin")]
         public async Task<IActionResult> UploadProfileImage(IFormFile file)
         {
             try
