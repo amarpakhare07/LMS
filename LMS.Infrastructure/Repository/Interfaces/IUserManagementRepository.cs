@@ -46,6 +46,5 @@ namespace LMS.Infrastructure.Repository.Interfaces
         
 
 
-        Task<StudentDashboardSummaryDto> GetStudentDashboardSummaryAsync(int studentId);
     }
 }

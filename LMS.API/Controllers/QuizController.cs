@@ -27,6 +27,7 @@ namespace LMS.API.Controllers
         }
 
         [HttpGet("get-by-quizId/{quizId}")]
+
         public async Task<IActionResult> GetQuizByIdAsync([FromRoute] int quizId)
         {
             var quiz = await quizService.GetQuizByIdAsync(quizId);
@@ -40,6 +41,39 @@ namespace LMS.API.Controllers
         {
             var quizzes = await quizService.GetQuizzesByCourseAsync(courseId);
             return Ok(quizzes);
+        }
+
+
+        [HttpGet("all")]
+        [Authorize(Roles = "Instructor")]
+        public async Task<IActionResult> GetAllQuizzesAsync()
+        {
+            var quizzes = await quizService.GetAllQuizzesAsync();
+            return Ok(quizzes);
+        }
+
+        //[HttpDelete("{quizId")]
+        //[Authorize(Roles = "Instructor")]
+        //public async Task<IActionResult> RemoveQuizAsync([FromRoute] int quizId)
+        //{
+        //    var success = await quizService.DeleteQuizAsync(quizId);
+        //    if (success)
+        //    {
+        //        return NoContent();
+        //    }
+        //    return NotFound();
+        //}
+
+        [HttpPut("{quizId}")]
+        [Authorize(Roles = "Instructor")]
+        public async Task<IActionResult> UpdateQuizAsync([FromRoute] int quizId, [FromBody] UpdateQuizDto updateQuizDto)
+        {
+            var updatedQuiz = await quizService.UpdateQuizAsync(quizId, updateQuizDto);
+            if (updatedQuiz == null)
+            {
+                return NotFound();
+            }
+            return Ok(updatedQuiz);
         }
 
         [HttpPost("start/{quizId}")]

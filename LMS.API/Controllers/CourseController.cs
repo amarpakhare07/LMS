@@ -1,5 +1,6 @@
 ﻿using LMS.Domain.Models;
 using LMS.Infrastructure.DTO;
+using LMS.Infrastructure.Repository.Interfaces;
 using LMS.Infrastructure.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,15 +16,17 @@ namespace LMS.API.Controllers
         private readonly ICourseService courseService;
         private readonly IFileUploadService _fileUploadService;
         private readonly FileUploadLimits _limits;
+        private readonly IUserManagementRepository _userManagementRepository;
         
 
 
         public CourseController(ICourseService courseService, IFileUploadService fileService,
-            IOptions<FileUploadLimits> limits)
+            IOptions<FileUploadLimits> limits, IUserManagementRepository _userManagementRepository)
         {
             this.courseService = courseService;
             _fileUploadService = fileService;
             _limits = limits.Value;
+            this._userManagementRepository = _userManagementRepository;
             
         }
 
@@ -32,7 +35,17 @@ namespace LMS.API.Controllers
         [Authorize(Roles = "Admin,Instructor")]
         public async Task<IActionResult> CreateCourse([FromBody] CreateCourseDto createCourseDto)
         {
-            var course = await courseService.CreateCourseAsync(createCourseDto);
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+
+            var userId = int.Parse(userIdClaim);
+
+            // findinG from db
+            var user = await _userManagementRepository.GetByIdAsync(userId);
+            if (user == null)
+                return NotFound(new { Message = "User not found" });
+            var course = await courseService.CreateCourseAsync(createCourseDto,userId);
             return CreatedAtAction(nameof(GetCourseById), new { id = course.CourseID }, course);
         }
 

@@ -19,7 +19,7 @@ namespace LMS.Infrastructure.Services
             this.courseRepository = courseRepository;
         }
 
-        public async Task<CourseDto> CreateCourseAsync(CreateCourseDto createCourseDto)
+        public async Task<CourseDto> CreateCourseAsync(CreateCourseDto createCourseDto, int userId)
         {
             var course = new Course
             {
@@ -34,7 +34,7 @@ namespace LMS.Infrastructure.Services
                 Published = createCourseDto.Published
             };
 
-            var addedCourse = await courseRepository.AddCourseAsync(course);
+            var addedCourse = await courseRepository.AddCourseAsync(course,userId);
             return new CourseDto
             {
                 CourseID = addedCourse.CourseID,

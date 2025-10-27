@@ -25,7 +25,7 @@ namespace LMS.API.Controllers
             return Ok(lesson);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("id/{id}")]
         [AllowAnonymous]
         public async Task<IActionResult> GetLessonByIdAsync(int id)
         {
@@ -47,11 +47,11 @@ namespace LMS.API.Controllers
         public async Task<IActionResult> UpdateLessonAsync(int id, [FromBody] LessonDto lessonDto)
         {
             var success = await lessonService.UpdateLessonAsync(lessonDto);
-            if (success != null)
+            if (success == null)
             {
                 return NoContent();
             }
-            return NotFound();
+            return Ok(success);
         }
 
         [HttpDelete("{id}")]
@@ -63,7 +63,7 @@ namespace LMS.API.Controllers
             {
                 return NoContent();
             }
-            return NotFound();
+            return Ok(success);
         }
     }
 }
