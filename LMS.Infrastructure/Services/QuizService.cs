@@ -189,5 +189,43 @@ namespace LMS.Infrastructure.Services
             return quizSummaries;
         }
 
+        public Task<IEnumerable<QuizDto>> GetAllQuizzesAsync()
+        {
+            var quizzes = quizRepository.GetAllQuizzesAsync();
+            var quizDtos = quizzes.ContinueWith(qs => qs.Result.Select(quiz => new QuizDto
+            {
+                QuizID = quiz.QuizID,
+                CourseID = quiz.CourseID,
+                Title = quiz.Title,
+                TotalMarks = quiz.TotalMarks,
+                TimeLimit = quiz.TimeLimit,
+                CreatedAt = quiz.CreatedAt,
+                AttemptsAllowed = quiz.AttemptsAllowed,
+            }));
+            return quizDtos;
+        }
+
+        public Task<QuizDto> UpdateQuizAsync(int quizId, UpdateQuizDto quizDto)
+        {var quiz = new Quiz
+            {
+                QuizID = quizId,
+            CourseID = quizDto.CourseID,
+                Title = quizDto.Title,
+                TotalMarks = quizDto.TotalMarks,
+                TimeLimit = quizDto.TimeLimit,
+                AttemptsAllowed = quizDto.AttemptsAllowed,
+            };
+            return quizRepository.UpdateQuizAsync(quiz).ContinueWith(q =>
+                new QuizDto
+                {
+                    QuizID = q.Result.QuizID,
+                    CourseID = q.Result.CourseID,
+                    Title = q.Result.Title,
+                    TotalMarks = q.Result.TotalMarks,
+                    TimeLimit = q.Result.TimeLimit,
+                    CreatedAt = q.Result.CreatedAt,
+                    AttemptsAllowed = q.Result.AttemptsAllowed,
+                });
+        }
     }
 }

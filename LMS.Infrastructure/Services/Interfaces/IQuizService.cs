@@ -8,6 +8,8 @@ namespace LMS.Infrastructure.Services.Interfaces
     {
         Task<IEnumerable<QuizDto>> GetQuizzesByCourseAsync(int courseId);
         Task<QuizDto?> GetQuizByIdAsync(int quizId);
+        Task<IEnumerable<QuizDto>> GetAllQuizzesAsync();
+        Task<QuizDto> UpdateQuizAsync(int quizId, UpdateQuizDto quizDto);
         Task<QuizDto> CreateQuizAsync(CreateQuizDto quizDto);
         Task<bool> DeleteQuizAsync(int quizId);
         Task<StartQuizResponseDto> StartQuizAsync(int quizId, int userId);

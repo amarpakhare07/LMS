@@ -36,6 +36,14 @@ namespace LMS.Infrastructure.Repository
             return quiz;
         }
 
+        public async Task<List<Quiz>> GetAllQuizzesAsync()
+        {
+            var quizzes = await dbContext.Quizzes
+                .Where(q => !q.IsDeleted)
+                .ToListAsync();
+            return quizzes;
+        }
+
         public async Task<Quiz> CreateQuizAsync(Quiz quiz)
         {
             await dbContext.Quizzes.AddAsync(quiz);

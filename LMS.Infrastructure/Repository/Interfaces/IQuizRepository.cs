@@ -12,7 +12,8 @@ namespace LMS.Infrastructure.Repository.Interfaces
 
             Task<IEnumerable<Quiz>> GetQuizzesByCourseAsync(int courseId);
             Task<Quiz?> GetQuizByIdAsync(int quizId);
-            Task<Quiz> CreateQuizAsync(Quiz quiz);
+            Task<List<Quiz>> GetAllQuizzesAsync();
+        Task<Quiz> CreateQuizAsync(Quiz quiz);
             Task<Quiz> UpdateQuizAsync(Quiz quiz);
             Task<Quiz?> DeleteQuizAsync(int quizId);
 
