@@ -9,7 +9,7 @@ namespace LMS.Infrastructure.Repository.Interfaces
 {
     public interface ICourseRepository
     {
-        Task<Course> AddCourseAsync(Course course);
+        Task<Course> AddCourseAsync(Course course, int userId);
         Task<Course?> GetCourseByIdAsync(int id);
         Task<IEnumerable<Course>> GetAllCoursesAsync();
         Task<bool> UpdateCourseAsync(Course course);

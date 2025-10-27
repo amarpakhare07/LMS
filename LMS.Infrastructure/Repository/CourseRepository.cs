@@ -19,9 +19,12 @@ namespace LMS.Infrastructure.Repository
             this.dbContext = dbContext;
         }
 
-        public async Task<Course> AddCourseAsync(Course course)
+        public async Task<Course> AddCourseAsync(Course course, int userId)
         {
             dbContext.Courses.Add(course);
+            await dbContext.SaveChangesAsync();
+            CourseInstructor courseInstructor = new CourseInstructor{CourseID =course.CourseID, UserID=userId, AssignedAt = DateTime.Now };
+            dbContext.CourseInstructors.Add(courseInstructor);
             await dbContext.SaveChangesAsync();
             return course;
         }
