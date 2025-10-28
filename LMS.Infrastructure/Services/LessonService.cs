@@ -37,6 +37,8 @@ namespace LMS.Infrastructure.Services
                     Content = lesson.Content,
                     OrderIndex = lesson.OrderIndex,
                     VideoURL = lesson.VideoURL,
+                    LessonAttachmentUrl = lesson.LessonAttachmentUrl,
+                    LessonAttachmentFileName = lesson.LessonAttachmentFileName,
                     LessonType = lesson.LessonType,
                     EstimatedTime = lesson.EstimatedTime,
                     CreatedAt = lesson.CreatedAt,
@@ -65,6 +67,8 @@ namespace LMS.Infrastructure.Services
                 Content = lesson.Content,
                 OrderIndex = lesson.OrderIndex,
                 VideoURL = lesson.VideoURL,
+                LessonAttachmentUrl = lesson.LessonAttachmentUrl,
+                LessonAttachmentFileName = lesson.LessonAttachmentFileName,
                 LessonType = lesson.LessonType,
                 EstimatedTime = lesson.EstimatedTime,
                 CreatedAt = lesson.CreatedAt,
@@ -84,6 +88,8 @@ namespace LMS.Infrastructure.Services
                 Title = lessonDto.Title,
                 Content = lessonDto.Content,
                 VideoURL = lessonDto.VideoURL,
+                LessonAttachmentUrl = lessonDto.LessonAttachmentUrl, // Assuming LessonDto is used for CreateLessonDto
+                LessonAttachmentFileName = lessonDto.LessonAttachmentFileName,
                 OrderIndex = lessonDto.OrderIndex,
                 LessonType = lessonDto.LessonType,
                 EstimatedTime = lessonDto.EstimatedTime,
@@ -99,6 +105,8 @@ namespace LMS.Infrastructure.Services
                 Title = addedLesson.Title,
                 Content = addedLesson.Content,
                 VideoURL= addedLesson.VideoURL,
+                LessonAttachmentUrl = addedLesson.LessonAttachmentUrl,
+                LessonAttachmentFileName = addedLesson.LessonAttachmentFileName,
                 OrderIndex = addedLesson.OrderIndex,
                 LessonType = addedLesson.LessonType,
                 EstimatedTime = addedLesson.EstimatedTime,
@@ -122,6 +130,8 @@ namespace LMS.Infrastructure.Services
             lesson.Title = lessonDto.Title;
             lesson.Content = lessonDto.Content;
             lesson.VideoURL = lessonDto.VideoURL;
+            lesson.LessonAttachmentUrl = lessonDto.LessonAttachmentUrl;
+            lesson.LessonAttachmentFileName = lessonDto.LessonAttachmentFileName;
             lesson.OrderIndex = lessonDto.OrderIndex;
             lesson.LessonType = lessonDto.LessonType;
             lesson.EstimatedTime = lessonDto.EstimatedTime;
@@ -139,6 +149,8 @@ namespace LMS.Infrastructure.Services
                 Title = updatedLesson.Title,
                 Content = updatedLesson.Content,
                 VideoURL = updatedLesson.VideoURL,
+                LessonAttachmentUrl = updatedLesson.LessonAttachmentUrl,
+                LessonAttachmentFileName = updatedLesson.LessonAttachmentFileName,
                 OrderIndex = updatedLesson.OrderIndex,
                 LessonType = updatedLesson.LessonType,
                 EstimatedTime = updatedLesson.EstimatedTime,
@@ -170,6 +182,29 @@ namespace LMS.Infrastructure.Services
                 UpdatedAt = lesson.UpdatedAt,
          
             };
+        }
+        public async Task<bool> UpdateLessonAttachmentAsync(int lessonId, string fileUrl, string originalFileName)
+        {
+            // 1. Logic: Use the repository to retrieve the Lesson, including authorization check
+            var lesson = await lessonRepository.GetLessonByIdAsync(lessonId);
+
+            if (lesson == null)
+            {
+                // Lesson not found OR the authenticated user is NOT the instructor for the course
+                return false;
+            }
+
+            // 2. Logic: Update the properties on the tracked entity
+            lesson.LessonAttachmentUrl = fileUrl;
+            lesson.LessonAttachmentFileName = originalFileName;
+            lesson.UpdatedAt = DateTime.UtcNow; // Update timestamp for the change
+
+            // 3. Persistence: Call the repository's generic update/save method
+            // Since EF Core is tracking the 'lesson' object, calling Update/SaveChangesAsync will save the changes.
+            // Using the existing UpdateLessonAsync from the repository is appropriate here.
+            var updatedLesson = await lessonRepository.UpdateLessonAsync(lesson);
+
+            return updatedLesson != null;
         }
     }
 }

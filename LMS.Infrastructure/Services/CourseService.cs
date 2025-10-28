@@ -31,6 +31,8 @@ namespace LMS.Infrastructure.Services
                 Duration = createCourseDto.Duration,
                 ThumbnailURL = createCourseDto.ThumbnailURL,
                 CategoryID = createCourseDto.CategoryID,
+                CourseMaterialUrl = createCourseDto.CourseMaterialUrl,
+                CourseMaterialFileName = createCourseDto.CourseMaterialFileName,
                 Published = createCourseDto.Published
             };
 
@@ -46,6 +48,8 @@ namespace LMS.Infrastructure.Services
                 Duration = addedCourse.Duration,
                 ThumbnailURL = addedCourse.ThumbnailURL,
                 CategoryID = addedCourse.CategoryID,
+                CourseMaterialUrl = addedCourse.CourseMaterialUrl,
+                CourseMaterialFileName = addedCourse.CourseMaterialFileName,
                 Published = addedCourse.Published,
                 Rating = addedCourse.Rating,
                 ReviewCount = addedCourse.ReviewCount
@@ -67,6 +71,8 @@ namespace LMS.Infrastructure.Services
                 Duration = course.Duration,
                 ThumbnailURL = course.ThumbnailURL,
                 CategoryID = course.CategoryID,
+                CourseMaterialUrl = course.CourseMaterialUrl,
+                CourseMaterialFileName = course.CourseMaterialFileName,
                 Published = course.Published,
                 Rating = course.Rating,
                 ReviewCount = course.ReviewCount,
@@ -79,6 +85,8 @@ namespace LMS.Infrastructure.Services
                                     Title = l.Title,
                                     Content = l.Content,
                                     VideoURL = l.VideoURL,
+                                    LessonAttachmentUrl = l.LessonAttachmentUrl,
+                                    LessonAttachmentFileName = l.LessonAttachmentFileName,
                                     OrderIndex = l.OrderIndex,
                                     LessonType = l.LessonType,
                                     EstimatedTime = l.EstimatedTime
@@ -104,6 +112,8 @@ namespace LMS.Infrastructure.Services
                     Duration = course.Duration,
                     ThumbnailURL = course.ThumbnailURL,
                     CategoryID = course.CategoryID,
+                    CourseMaterialUrl = course.CourseMaterialUrl,
+                    CourseMaterialFileName = course.CourseMaterialFileName,
                     Published = course.Published,
                     Rating = course.Rating,
                     ReviewCount = course.ReviewCount
@@ -125,6 +135,8 @@ namespace LMS.Infrastructure.Services
             course.Duration = courseDto.Duration;
             course.ThumbnailURL = courseDto.ThumbnailURL;
             course.CategoryID = courseDto.CategoryID;
+            course.CourseMaterialUrl = courseDto.CourseMaterialUrl;
+            course.CourseMaterialFileName = courseDto.CourseMaterialFileName;
             course.Published = courseDto.Published;
 
             return await courseRepository.UpdateCourseAsync(course);
@@ -143,6 +155,18 @@ namespace LMS.Infrastructure.Services
             course.Published = updateCourseStatusDto.Published;
 
             return courseRepository.UpdateCourseStatusAsync(course);
+        }
+
+        public async Task<bool> UpdateCourseMaterialAsync(int courseId, string fileUrl, string fileName)
+        {
+            var course = await courseRepository.GetCourseByIdAsync(courseId);
+            if (course == null) return false;
+
+            course.CourseMaterialUrl = fileUrl;
+            course.CourseMaterialFileName = fileName;
+            course.UpdatedAt = DateTime.UtcNow;
+
+            return await courseRepository.UpdateCourseAsync(course);
         }
     }
 }

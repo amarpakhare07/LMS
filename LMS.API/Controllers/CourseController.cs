@@ -119,17 +119,18 @@ namespace LMS.API.Controllers
 
             try
             {
-                var fileName = await _fileUploadService.SaveFileAsync(file, _limits.DocumentMaxSize);
+                var fileUrl = await _fileUploadService.SaveFileAsync(file, _limits.DocumentMaxSize);
+                var originalFileName = file.FileName;
 
                 var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 if (!int.TryParse(userIdClaim, out int userId))
                     return Unauthorized();
 
-                var success = await _fileUploadService.SaveCourseDocumentAsync(courseId, userId, fileName);
+                var success = await courseService.UpdateCourseMaterialAsync(courseId, fileUrl, originalFileName);
                 if (!success)
                     return NotFound(new { Message = "CourseInstructor record not found" });
 
-                return Ok(new { FileName = fileName, Message = "Course material uploaded and saved" });
+                return Ok(new { Url = fileUrl, FileName = originalFileName, Message = "Course material uploaded and saved" });
             }
             catch (Exception ex)
             {

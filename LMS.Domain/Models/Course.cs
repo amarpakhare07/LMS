@@ -19,6 +19,8 @@ namespace LMS.Domain.Models
         public int? Duration { get; set; }
         public string? ThumbnailURL { get; set; }
         public int CategoryID { get; set; }
+        public string? CourseMaterialUrl { get; set; }
+    public string? CourseMaterialFileName { get; set; }
         public bool Published { get; set; }
         public double? Rating { get; set; }
         public int? ReviewCount { get; set; }

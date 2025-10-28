@@ -14,5 +14,6 @@ namespace LMS.Infrastructure.Services.Interfaces
         Task<LessonDto?> CreateLessonAsync(CreateLessonDto lessonDto);
         Task<LessonDto?> UpdateLessonAsync(LessonDto lessonDto);
         Task<LessonDto?> DeleteLessonAsync(int lessonId);
+        Task<bool> UpdateLessonAttachmentAsync(int lessonId, string fileUrl, string originalFileName);
     }
 }
