@@ -13,6 +13,8 @@ namespace LMS.Domain.Models
         public string Title { get; set; } = null!;
         public string? Content { get; set; }
         public string? VideoURL { get; set; }
+        public string? LessonAttachmentUrl { get; set; }
+        public string? LessonAttachmentFileName { get; set; }
         public int? OrderIndex { get; set; }
         public string? LessonType { get; set; }
         public int? EstimatedTime { get; set; }

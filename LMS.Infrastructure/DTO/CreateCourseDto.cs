@@ -20,6 +20,8 @@ namespace LMS.Infrastructure.DTO
 
         [Required]
         public int CategoryID { get; set; }
+        public string? CourseMaterialUrl { get; set; }
+        public string? CourseMaterialFileName { get; set; }
         public bool Published { get; set; } 
 
     }
