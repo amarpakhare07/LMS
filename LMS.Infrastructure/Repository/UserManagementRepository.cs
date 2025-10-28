@@ -377,8 +377,7 @@ namespace LMS.Infrastructure.Repository
                     // Aggregation: Count of non-deleted lessons
                     TotalLessons = c.Lessons.Count(l => !l.IsDeleted),
                     // Projection of relevant lesson details for in-memory time calculation
-                    TotalEstimatedMinutes = c.Lessons.Where(l => !l.IsDeleted)
-                                       .Sum(l => l.EstimatedTime ?? 0),
+                    TotalEstimatedMinutes = c.Duration,
 
                     CategoryName = c.Category != null ? c.Category.Name : "Uncategorized"
                 })
@@ -389,7 +388,7 @@ namespace LMS.Infrastructure.Repository
             {
                 // Calculate total minutes from string formats (e.g., "2 Hr")
                 //var totalMinutes = r.Lessons.Sum(timeStr => ParseTimeStringToMinutes(timeStr));
-                var totalDuration = TimeSpan.FromMinutes(r.TotalEstimatedMinutes);
+                //var totalDuration = TimeSpan.FromMinutes(r.TotalEstimatedMinutes);
 
                 return new InstructorCoursesDto
                 {
@@ -399,7 +398,7 @@ namespace LMS.Infrastructure.Repository
                     TotalLessons = r.TotalLessons,
                     TotalEstimatedTimeInMinutes = r.TotalEstimatedMinutes,
                     // Format the TimeSpan into the required display string (e.g., "248 Hr")
-                    TotalDurationDisplay = FormatDuration(totalDuration),
+                    //TotalDurationDisplay = FormatDuration(totalDuration),
                     CourseCategory = r.CategoryName
                 };
             }).ToList();

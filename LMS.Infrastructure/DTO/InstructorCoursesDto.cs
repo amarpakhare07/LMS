@@ -20,7 +20,7 @@ namespace LMS.Infrastructure.DTO
             // Aggregated: Formatted string (e.g., "248 Hr") for the frontend
             public string TotalDurationDisplay { get; set; }
             // Hidden field used internally for calculation
-            public int TotalEstimatedTimeInMinutes { get; set; }
+            public int? TotalEstimatedTimeInMinutes { get; set; }
      
     }
 }
