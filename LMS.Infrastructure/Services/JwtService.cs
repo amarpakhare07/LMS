@@ -1,4 +1,5 @@
-﻿using LMS.Domain;
+﻿using Azure.Core;
+using LMS.Domain;
 using LMS.Infrastructure.DTO;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -50,8 +51,12 @@ namespace LMS.Infrastructure.Services
                 return null;
             }
 
+            if (user.IsActive == false){
+                return null;
+            }
+
             // Adding the login actice stamp
-            user.IsActive = true;
+            //user.IsActive = true;
 
             // Inserting the last login time
             user.LastLogin = DateTime.UtcNow;
